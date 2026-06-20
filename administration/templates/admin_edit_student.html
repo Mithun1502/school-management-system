@@ -1,0 +1,279 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+  <style>
+    .main-content {
+      padding: 30px;
+    }
+    
+    .form-card {
+      width: 100%;
+      max-width: 700px;
+      margin: 20px auto;
+    
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+    
+      border-radius: 20px;
+      padding: 30px;
+      color: white;
+    
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    }
+    
+    .form-card h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    hr {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .form-label {
+      color: white;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      border-radius: 12px;
+      padding: 12px;
+    }
+    
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #2563eb;
+      color: white;
+      box-shadow: none;
+    }
+    
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .form-control[readonly] {
+      background: rgba(0, 0, 0, 0.25);
+      color: #d1d5db;
+      cursor: not-allowed;
+    }
+    
+    .btn-success {
+      background: #16a34a;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 25px;
+      font-weight: 600;
+    }
+    
+    .btn-success:hover {
+      background: #15803d;
+    }
+    
+    .btn-secondary {
+      border-radius: 12px;
+      padding: 10px 25px;
+    }
+    
+    /* Tablet */
+    @media (max-width: 991px) {
+      .main-content {
+        margin-left: 0 !important;
+        padding: 20px;
+      }
+    
+      .form-card {
+        max-width: 100%;
+        margin: 10px auto;
+      }
+    }
+    
+    /* Mobile */
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 15px;
+      }
+    
+      .form-card {
+        padding: 20px;
+      }
+    
+      .d-flex.gap-2 {
+        flex-direction: column;
+      }
+    
+      .d-flex.gap-2 .btn {
+        width: 100%;
+      }
+    }
+    
+    /* Small Mobile */
+    @media (max-width: 480px) {
+      .form-card {
+        padding: 15px;
+        border-radius: 15px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.3rem;
+      }
+    
+      .form-control {
+        padding: 10px;
+        font-size: 14px;
+      }
+    
+      .form-label {
+        font-size: 14px;
+      }
+    }
+    
+    /* 320px */
+    @media (max-width: 320px) {
+      .form-card {
+        padding: 12px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.1rem;
+      }
+    
+      .btn {
+        font-size: 12px;
+        padding: 8px;
+      }
+    
+      .form-control,
+      .form-label {
+        font-size: 12px;
+      }
+    }
+    
+    /* 170px */
+    @media (max-width: 170px) {
+      .main-content {
+        padding: 5px;
+      }
+    
+      .form-card {
+        padding: 6px;
+        border-radius: 8px;
+      }
+    
+      .form-card h2 {
+        font-size: 0.7rem;
+      }
+    
+      .form-label {
+        font-size: 7px;
+        margin-bottom: 3px;
+      }
+    
+      .form-control {
+        font-size: 7px;
+        padding: 4px;
+        border-radius: 4px;
+      }
+    
+      .btn {
+        font-size: 7px;
+        padding: 5px;
+      }
+    
+      .bi {
+        display: none;
+      }
+    }
+    .table-container,
+.table-responsive {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+    color: white;
+    background: transparent !important;
+}
+
+.table thead {
+    background: rgba(255,255,255,0.08);
+}
+
+.table thead th {
+    color: white;
+    border: none;
+}
+
+.table tbody tr {
+    background: transparent !important;
+}
+
+.table tbody td {
+    color: white;
+    border-color: rgba(255,255,255,0.1);
+}
+  </style>
+
+  <div class="container-fluid">
+    <div class="form-card">
+      <h2>
+        <i class="bi bi-pencil-square me-2"></i>
+        Edit Student
+      </h2>
+
+      <hr />
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-4">
+          <label class="form-label">Student Name</label>
+          <input type="text" name="name" class="form-control" value="{{ student.name }}" required />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Standard</label>
+          <input type="text" class="form-control" value="{{ student.standard }}" readonly />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Roll Number</label>
+          <input type="text" class="form-control" value="{{ student.roll_number }}" readonly />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Phone Number</label>
+          <input type="text" name="phone" class="form-control" value="{{ student.phone }}" required />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" class="form-control" value="{{ student.email }}" required />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Class Teacher</label>
+          <input type="text" class="form-control" value="{{ student.teacher.name }}" readonly />
+        </div>
+
+        <div class="d-flex gap-2 justify-content-center flex-wrap mt-4">
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-check-circle me-2"></i>
+            Update Student
+          </button>
+
+          <a href="{% url 'view_students_by_standard' student.standard %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

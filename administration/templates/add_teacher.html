@@ -1,0 +1,630 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+  <style>
+    .form-card {
+      width: 100%;
+      max-width: 700px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 25px;
+      color: white;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .form-control,
+    .form-select {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      box-shadow: none;
+      border-color: #2563eb;
+    }
+    
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    label {
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    
+    .btn-save {
+      background: #2563eb;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    
+    .btn-save:hover {
+      background: #1d4ed8;
+    }
+    
+    @media (max-width: 768px) {
+      .form-card {
+        padding: 20px;
+        margin: 15px;
+      }
+    }
+    @media (max-width: 768px) {
+      .form-card {
+        padding: 20px;
+        margin: 15px;
+        border-radius: 20px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.8rem;
+      }
+    
+      .btn-save {
+        padding: 11px;
+        font-size: 15px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .form-card {
+        padding: 18px;
+        margin: 10px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.5rem;
+      }
+    
+      label {
+        font-size: 14px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 14px;
+        padding: 10px;
+      }
+    
+      .btn-save {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+    
+    @media (max-width: 425px) {
+      .form-card {
+        padding: 15px;
+        margin: 8px;
+        border-radius: 15px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.3rem;
+      }
+    
+      label {
+        font-size: 13px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 13px;
+        padding: 9px;
+      }
+    
+      .btn-save {
+        font-size: 13px;
+        padding: 9px;
+      }
+    }
+    
+    @media (max-width: 320px) {
+      .form-card {
+        padding: 12px;
+        margin: 5px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.1rem;
+      }
+    
+      label {
+        font-size: 12px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 12px;
+        padding: 8px;
+      }
+    
+      .btn-save {
+        font-size: 12px;
+        padding: 8px;
+      }
+    
+      .alert {
+        font-size: 12px;
+        padding: 8px;
+      }
+    }
+    
+    @media (max-width: 240px) {
+      .form-card {
+        padding: 8px;
+        margin: 3px;
+        border-radius: 10px;
+      }
+    
+      .form-card h2 {
+        font-size: 0.95rem;
+      }
+    
+      label {
+        font-size: 11px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 11px;
+        padding: 6px;
+      }
+    
+      .btn-save {
+        font-size: 11px;
+        padding: 7px;
+      }
+    
+      .alert {
+        font-size: 11px;
+        padding: 6px;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      .form-card {
+        padding: 5px;
+        margin: 2px;
+        border-radius: 8px;
+      }
+    
+      .form-card h2 {
+        font-size: 0.75rem;
+        margin-bottom: 10px;
+      }
+    
+      label {
+        font-size: 9px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 9px;
+        padding: 4px;
+        min-height: 28px;
+      }
+    
+      .btn-save {
+        font-size: 9px;
+        padding: 5px;
+      }
+    
+      .alert {
+        font-size: 9px;
+        padding: 4px;
+      }
+    
+      .row {
+        margin: 0;
+      }
+    
+      .col-md-6,
+      .col-md-12,
+      .col-sm-12 {
+        padding-left: 2px;
+        padding-right: 2px;
+      }
+    }
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #ccc;
+      font-size: 18px;
+      z-index: 10;
+    }
+    
+    .toggle-password:hover {
+      color: white;
+    }
+    .form-select {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      /* border: 1px solid rgba(255, 255, 255, 0.15);*/
+    }
+    
+    .form-select:focus {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: #5b7fff;
+    }
+    
+    .form-select option {
+      background: #000000;
+      color: #e0d6d6;
+    }
+    .error-text {
+      color: #ff4d4d !important;
+      display: block;
+      min-height: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.3;
+      word-break: break-word;
+      margin-top: 3px;
+    }
+    @media (max-width: 768px) {
+      .error-text {
+        min-height: 28px;
+        font-size: 12px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .error-text {
+        min-height: 26px;
+        font-size: 11px;
+      }
+    }
+    
+    @media (max-width: 425px) {
+      .error-text {
+        min-height: 24px;
+        font-size: 10px;
+      }
+    }
+    
+    @media (max-width: 320px) {
+      .error-text {
+        min-height: 22px;
+        font-size: 9px;
+        line-height: 1.2;
+      }
+    }
+    
+    @media (max-width: 240px) {
+      .error-text {
+        min-height: 20px;
+        font-size: 8px;
+        line-height: 1.1;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      .error-text {
+        min-height: 18px;
+        font-size: 7px;
+        line-height: 1;
+      }
+    }
+    .input-error {
+      border: 1px solid red !important;
+    }
+  </style>
+  {% comment %} <div class="main-content">
+    <h3>Teacher Section Loading....</h3>
+  </div> {% endcomment %}
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="form-card">
+        <h2 class="text-center mb-4">
+          <i class="bi bi-person-plus-fill"></i>
+          Add Teacher
+        </h2>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="POST" id="teacherForm">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-6 col-sm-12 mb-3">
+              <label>Name</label>
+              <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" required maxlength="25" />
+              <small class="error-text" id="nameError"></small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Phone Number</label>
+              <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter your 10-digit phone number" maxlength="10" required />
+              <small class="error-text" id="phoneError"></small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Email</label>
+              <input type="text" id="email" name="email" class="form-control" placeholder="Enter your email address" required />
+              <small class="error-text" id="emailError"></small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Standard</label>
+              <select id="standard" name="standard" class="form-select" required>
+                <option value="">Select Standard</option>
+
+                {% for standard in standards %}
+                  <option value="{{ standard.standard_name }}">{{ standard.standard_name }}</option>
+                {% endfor %}
+              </select>
+              <small class="error-text" id="standardError"></small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Username</label>
+              <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required maxlength="20" />
+              <small class="error-text" id="usernameError"></small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Password</label>
+              <div class="position-relative">
+                <input type="password" id="password" name="password" class="form-control pe-5" placeholder="Enter a strong password" required />
+                <i class="bi bi-eye-slash-fill toggle-password" data-target="password"></i>
+              </div>
+              <small class="error-text" id="passwordError"></small>
+            </div>
+
+            <div class="col-md-12 mb-4 col-lg-12">
+              <label>Confirm Password</label>
+              <div class="position-relative">
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control pe-5" placeholder="Re-enter your password" required />
+                <i class="bi bi-eye-slash-fill toggle-password" data-target="confirm_password"></i>
+              </div>
+              <small class="error-text" id="confirmPasswordError"></small>
+            </div>
+          </div>
+          <div class="col-md-12 mb-3 col-lg-12">
+            <label>Address</label>
+            <textarea style="resize: none;" id="address" name="address" class="form-control" rows="3" placeholder="Enter teacher address" required></textarea>
+            <small class="error-text" id="addressError"></small>
+          </div>
+
+          <div class="col-md-12 mb-3 col-lg-12">
+            <label>Bank Account Number</label>
+            <input type="text" id="bank_account_number" name="bank_account_number" class="form-control" placeholder="Enter account number" maxlength="18" required />
+            <small class="error-text" id="accountError"></small>
+          </div>
+
+          <div class="col-md-12 mb-3 col-lg-12">
+            <label>Bank Branch</label>
+            <input type="text" id="bank_branch" name="bank_branch" class="form-control" placeholder="Enter branch name" maxlength="50" required />
+            <small class="error-text" id="branchError"></small>
+          </div>
+
+          <div class="col-md-12 mb-4 col-lg-12">
+            <label>IFSC Code</label>
+            <input type="text" id="ifsc_code" name="ifsc_code" class="form-control" placeholder="Enter IFSC Code" maxlength="11" required />
+            <small class="error-text" id="ifscError"></small>
+          </div>
+          <button type="submit" class="btn-save"><i class="bi bi-check-circle-fill"></i> Add Teacher</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% comment %} <form method="POST" id="teacherForm">
+    {% csrf_token %}
+
+    <!-- un form fields ellam same -->
+
+    <button type="submit" class="btn-save">
+      <i class="bi bi-check-circle-fill"></i>
+      Add Teacher
+    </button>
+  </form> {% endcomment %}
+
+  <script>
+    const form = document.getElementById('teacherForm')
+    
+    const nameInput = document.getElementById('name')
+    const standardInput = document.querySelector("[name='standard']")
+    const phoneInput = document.getElementById('phone')
+    const emailInput = document.getElementById('email')
+    const usernameInput = document.getElementById('username')
+    const passwordInput = document.getElementById('password')
+    const confirmPasswordInput = document.getElementById('confirm_password')
+    const addressInput = document.getElementById('address')
+    const accountInput = document.getElementById('bank_account_number')
+    const branchInput = document.getElementById('bank_branch')
+    const ifscInput = document.getElementById('ifsc_code')
+    const nameRegex = /^[A-Za-z ]{3,25}$/
+    const phoneRegex = /^[6789]\d{9}$/
+    const emailRegex = /^[a-zA-Z0-9_.]+@gmail\.com$/
+    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{3,19}$/
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/
+    const addressRegex = /^.{10,200}$/
+    const accountRegex = /^\d{9,18}$/
+    const branchRegex = /^[A-Za-z0-9 .,-]{3,50}$/
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/
+    
+    function setError(input, errorId, message) {
+      document.getElementById(errorId).textContent = message
+      input.classList.add('input-error')
+    }
+    
+    function clearError(input, errorId) {
+      document.getElementById(errorId).textContent = ''
+      input.classList.remove('input-error')
+    }
+    
+    function validateName() {
+      const value = nameInput.value.trim()
+      if (!nameRegex.test(value)) {
+        setError(nameInput, 'nameError', 'Name must contain only letters and spaces (3-25 characters)')
+        return false
+      }
+      clearError(nameInput, 'nameError')
+      return true
+    }
+    
+    function validateStandard() {
+      const value = standardInput.value
+    
+      if (value === '') {
+        setError(standardInput, 'standardError', 'Please select a standard')
+        return false
+      }
+    
+      clearError(standardInput, 'standardError')
+      return true
+    }
+    
+    function validatePhone() {
+      const value = phoneInput.value.trim()
+      if (!phoneRegex.test(value)) {
+        setError(phoneInput, 'phoneError', 'Phone number must be 10 digits and start with 6, 7, 8 or 9')
+        return false
+      }
+      clearError(phoneInput, 'phoneError')
+      return true
+    }
+    
+    function validateEmail() {
+      const value = emailInput.value.trim().toLowerCase()
+      if (!emailRegex.test(value)) {
+        setError(emailInput, 'emailError', 'Only Gmail addresses are allowed')
+        return false
+      }
+      clearError(emailInput, 'emailError')
+      return true
+    }
+    
+    function validateUsername() {
+      const value = usernameInput.value.trim()
+      if (!usernameRegex.test(value)) {
+        setError(usernameInput, 'usernameError', 'Username must start with a letter and contain only letters, numbers and underscore (4-20 characters)')
+        return false
+      }
+      clearError(usernameInput, 'usernameError')
+      return true
+    }
+    
+    function validatePassword() {
+      const value = passwordInput.value
+      if (!passwordRegex.test(value)) {
+        setError(passwordInput, 'passwordError', 'Password must contain uppercase, lowercase, number and special character')
+        return false
+      }
+      clearError(passwordInput, 'passwordError')
+      return true
+    }
+    
+    function validateConfirmPassword() {
+      if (passwordInput.value !== confirmPasswordInput.value) {
+        setError(confirmPasswordInput, 'confirmPasswordError', 'Passwords do not match')
+        return false
+      }
+      clearError(confirmPasswordInput, 'confirmPasswordError')
+      return true
+    }
+    function validateAddress() {
+      const value = addressInput.value.trim()
+    
+      if (!addressRegex.test(value)) {
+        setError(addressInput, 'addressError', 'Address must be 10 to 200 characters')
+        return false
+      }
+    
+      clearError(addressInput, 'addressError')
+      return true
+    }
+    
+    function validateAccount() {
+      const value = accountInput.value.trim()
+    
+      if (!accountRegex.test(value)) {
+        setError(accountInput, 'accountError', 'Account number must contain 9-18 digits')
+        return false
+      }
+    
+      clearError(accountInput, 'accountError')
+      return true
+    }
+    
+    function validateBranch() {
+      const value = branchInput.value.trim()
+    
+      if (!branchRegex.test(value)) {
+        setError(branchInput, 'branchError', 'Enter valid branch name')
+        return false
+      }
+    
+      clearError(branchInput, 'branchError')
+      return true
+    }
+    
+    function validateIFSC() {
+      const value = ifscInput.value.trim().toUpperCase()
+    
+      if (!ifscRegex.test(value)) {
+        setError(ifscInput, 'ifscError', 'Invalid IFSC Code')
+        return false
+      }
+    
+      clearError(ifscInput, 'ifscError')
+      return true
+    }
+    
+    nameInput.addEventListener('input', validateName)
+    standardInput.addEventListener('change', validateStandard)
+    phoneInput.addEventListener('input', validatePhone)
+    emailInput.addEventListener('input', validateEmail)
+    usernameInput.addEventListener('input', validateUsername)
+    passwordInput.addEventListener('input', () => {
+      validatePassword()
+      validateConfirmPassword()
+    })
+    confirmPasswordInput.addEventListener('input', validateConfirmPassword)
+    addressInput.addEventListener('input', validateAddress)
+    accountInput.addEventListener('input', validateAccount)
+    branchInput.addEventListener('input', validateBranch)
+    ifscInput.addEventListener('input', validateIFSC)
+    
+    form.addEventListener('submit', function (e) {
+      const isValid = validateName() && validateStandard() && validatePhone() && validateEmail() && validateUsername() && validatePassword() && validateConfirmPassword() && validateAddress() && validateAccount() && validateBranch() && validateIFSC()
+    
+      if (!isValid) {
+        e.preventDefault()
+      }
+    })
+    
+    document.querySelectorAll('.toggle-password').forEach((icon) => {
+      icon.addEventListener('click', function () {
+        const input = document.getElementById(this.dataset.target)
+    
+        if (input.type === 'password') {
+          input.type = 'text'
+          this.classList.replace('bi-eye-slash-fill', 'bi-eye-fill')
+        } else {
+          input.type = 'password'
+          this.classList.replace('bi-eye-fill', 'bi-eye-slash-fill')
+        }
+      })
+    })
+  </script>
+{% endblock %}

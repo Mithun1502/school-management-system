@@ -1,0 +1,136 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+  <style>
+    .form-card {
+      width: 100%;
+      max-width: 700px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 25px;
+      color: white;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: fit-content;
+      max-height: 300px !important;
+      overflow: hidden;
+    }
+    .buttons-standards {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 10px;
+    }
+    .standard-edit {
+      padding: 8px 25px;
+    
+      background-color: rgba(100, 255, 95, 0.47);
+      font-weight: 600;
+      text-decoration: none;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .standard-delete {
+      padding: 8px 25px;
+    
+      background-color: rgba(216, 10, 10, 0.19);
+      text-decoration: none;
+      font-weight: 600;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    @media (max-width: 300px) and (min-width: 170px) {
+      h3 {
+        font-size: 20px;
+      }
+      h5 {
+        font-size: 15px !important;
+      }
+      .buttons-standards {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .btn {
+        padding: 5px 17px !important;
+      }
+    }
+    .alert {
+      width: 100%;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      white-space: normal;
+      position: relative;
+      padding-right: 35px;
+    }
+    @media (max-width: 250px) {
+      .alert {
+        font-size: 8px !important;
+        padding: 6px 20px 6px 6px !important;
+        line-height: 1.3;
+        word-break: break-word;
+      }
+    
+      .alert .btn-close {
+        transform: scale(0.5);
+        top: 3px;
+        right: 3px;
+        position: absolute;
+      }
+    }
+    @media (max-width: 200px) {
+      .alert .btn-close {
+        display: none;
+      }
+    
+      .alert {
+        padding-right: 6px !important;
+        font-size: 7px !important;
+      }
+    }
+  </style>
+  <main class="main-content">
+    <div class="container mt-4">
+      <h3 class="mb-4">All Standards</h3>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      <div class="row">
+        {% for standard in standards %}
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="card shadow-sm form-card">
+              <div class="card-body text-center">
+                <h5 class="mb-5">{{ standard.standard_name }}</h5>
+                <div class="buttons-standards">
+                  <a href="{% url 'edit_standard' standard.id %}" class="btn btn-success standard-edit">Edit</a>
+
+                  <a href="{% url 'delete_standard' standard.id %}" class="btn btn-danger standard-delete" onclick="return confirm('Are you sure you want to delete this standard?')">Delete</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <p>No Standards Added Yet</p>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.alert').forEach((alert) => {
+        bootstrap.Alert.getOrCreateInstance(alert).close()
+      })
+    }, 3000)
+  </script>
+{% endblock %}

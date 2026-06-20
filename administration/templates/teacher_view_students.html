@@ -1,0 +1,296 @@
+{% extends 'teacher_dashboard.html' %}
+
+{% block content %}
+  <style>
+    .main-content {
+      padding: 20px;
+    }
+    
+    .student-card {
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .student-card h2 {
+      font-weight: 700;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+    
+    .table {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+    .table {
+      margin-bottom: 0;
+      white-space: nowrap;
+      color: #fff;
+    }
+    
+    .table thead th {
+      background: rgba(0, 0, 0, 0.4) !important;
+      color: #fff !important;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .table tbody tr {
+      background: rgba(255, 255, 255, 0.06);
+      transition: 0.3s;
+    }
+    
+    .table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    
+    .table td {
+      background: transparent !important;
+      color: #fff !important;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .table th {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    /* Alert Responsive */
+    
+    @media (max-width: 370px) {
+      .alert {
+        font-size: 12px !important;
+        padding: 8px 10px !important;
+        margin-bottom: 10px !important;
+        border-radius: 8px !important;
+        word-break: break-word;
+      }
+    }
+    
+    @media (max-width: 250px) {
+      .alert {
+        font-size: 10px !important;
+        padding: 6px 8px !important;
+        margin-bottom: 8px !important;
+        border-radius: 6px !important;
+        line-height: 1.3;
+        word-break: break-word;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      .alert {
+        font-size: 8px !important;
+        padding: 4px 6px !important;
+        margin-bottom: 6px !important;
+        border-radius: 4px !important;
+        line-height: 1.2;
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
+    }
+    .table th,
+    .table td {
+      vertical-align: middle;
+    }
+    .table {
+      border-bottom: none !important;
+    }
+    
+    .table tbody tr:last-child td {
+      border-bottom: none !important;
+    }
+    .action-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-sm {
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    
+    .empty-box {
+      text-align: center;
+      padding: 20px;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+      .student-card {
+        padding: 18px;
+      }
+    
+      .student-card h2 {
+        font-size: 1.5rem;
+      }
+    
+      .table {
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .main-content {
+        padding: 10px;
+      }
+    
+      .student-card {
+        padding: 15px;
+      }
+    
+      .student-card h2 {
+        font-size: 1.25rem;
+      }
+    
+      .table {
+        font-size: 13px;
+      }
+    
+      .btn-sm {
+        font-size: 12px;
+        padding: 5px 8px;
+      }
+    }
+    
+    @media (max-width: 370px) {
+      .student-card h2 {
+        font-size: 1rem;
+      }
+    
+      .table {
+        font-size: 12px;
+      }
+    
+      .btn-sm {
+        font-size: 11px;
+        padding: 4px 6px;
+      }
+    }
+    
+    @media (max-width: 250px) {
+      .student-card {
+        padding: 10px;
+      }
+    
+      .student-card h2 {
+        font-size: 0.9rem;
+      }
+    
+      .table {
+        font-size: 10px;
+      }
+    
+      .btn-sm {
+        font-size: 9px;
+        padding: 3px 5px;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      .main-content {
+        padding: 4px;
+      }
+    
+      .student-card {
+        padding: 6px;
+        border-radius: 10px;
+      }
+    
+      .student-card h2 {
+        font-size: 0.75rem;
+      }
+    
+      .table {
+        font-size: 8px;
+      }
+    
+      .btn-sm {
+        font-size: 8px;
+        padding: 2px 4px;
+      }
+    }
+    .table td,
+    .table th {
+      border-color: rgba(255, 255, 255, 0.05) !important;
+    }
+  </style>
+
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="student-card">
+        <h2 class="text-center">
+          <i class="bi bi-people-fill"></i>
+          My Students
+        </h2>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        {% if students %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Roll No</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for student in students %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+
+                    <td>{{ student.name }}</td>
+
+                    <td>{{ student.roll_number }}</td>
+
+                    <td>{{ student.phone }}</td>
+
+                    <td>{{ student.email }}</td>
+
+                    <td>
+                      <div class="action-btns">
+                        <a href="{% url 'teacher_edit_student' student.id %}" class="btn btn-outline-warning btn-sm">
+                          <i class="bi bi-pencil-square"></i>
+                          Edit
+                        </a>
+
+                        <a href="{% url 'teacher_delete_student' student.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this student?');">
+                          <i class="bi bi-trash"></i>
+                          Delete
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="empty-box">No students found for your class.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.alert').forEach((alert) => {
+        alert.style.transition = 'opacity 0.5s ease'
+        alert.style.opacity = '0'
+    
+        setTimeout(() => {
+          alert.remove()
+        }, 500)
+      })
+    }, 3000)
+  </script>
+{% endblock %}

@@ -1,0 +1,371 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+  <style>
+    .form-card {
+      width: 100%;
+      max-width: 700px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 25px;
+      color: white;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .form-control,
+    .form-select {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      box-shadow: none;
+      border-color: #2563eb;
+    }
+    
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    label {
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    
+    .btn-save {
+      background: #2563eb;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    
+    .btn-save:hover {
+      background: #1d4ed8;
+    }
+    
+    @media (max-width: 768px) {
+      .form-card {
+        padding: 20px;
+        margin: 15px;
+      }
+    }
+    .form-select {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      /* border: 1px solid rgba(255, 255, 255, 0.15);*/
+    }
+    
+    .form-select:focus {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: #5b7fff;
+    }
+    
+    .form-select option {
+      background: #000000;
+      color: #e0d6d6;
+    }
+    @media (max-width: 768px) {
+      .form-card {
+        padding: 20px;
+        margin: 15px;
+      }
+    }
+    @media (max-width: 768px) {
+      .form-card {
+        padding: 20px;
+        margin: 15px;
+        border-radius: 20px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.8rem;
+      }
+    
+      .btn-save {
+        padding: 11px;
+        font-size: 15px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .form-card {
+        padding: 18px;
+        margin: 10px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.5rem;
+      }
+    
+      label {
+        font-size: 14px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 14px;
+        padding: 10px;
+      }
+    
+      .btn-save {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+    
+    @media (max-width: 425px) {
+      .form-card {
+        padding: 15px;
+        margin: 8px;
+        border-radius: 15px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.3rem;
+      }
+    
+      label {
+        font-size: 13px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 13px;
+        padding: 9px;
+      }
+    
+      .btn-save {
+        font-size: 13px;
+        padding: 9px;
+      }
+    }
+    
+    @media (max-width: 320px) {
+      .form-card {
+        padding: 12px;
+        margin: 5px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.1rem;
+      }
+    
+      label {
+        font-size: 12px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 12px;
+        padding: 8px;
+      }
+    
+      .btn-save {
+        font-size: 12px;
+        padding: 8px;
+      }
+    
+      .alert {
+        font-size: 12px;
+        padding: 8px;
+      }
+    }
+    
+    @media (max-width: 240px) {
+      .form-card {
+        padding: 8px;
+        margin: 3px;
+        border-radius: 10px;
+      }
+    
+      .form-card h2 {
+        font-size: 0.95rem;
+      }
+    
+      label {
+        font-size: 11px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 11px;
+        padding: 6px;
+      }
+    
+      .btn-save {
+        font-size: 11px;
+        padding: 7px;
+      }
+    
+      .alert {
+        font-size: 11px;
+        padding: 6px;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      .form-card {
+        padding: 5px;
+        margin: 2px;
+        border-radius: 8px;
+      }
+    
+      .form-card h2 {
+        font-size: 0.75rem;
+        margin-bottom: 10px;
+      }
+    
+      label {
+        font-size: 9px;
+      }
+    
+      .form-control,
+      .form-select {
+        font-size: 9px;
+        padding: 4px;
+        min-height: 28px;
+      }
+    
+      .btn-save {
+        font-size: 9px;
+        padding: 5px;
+      }
+    
+      .alert {
+        font-size: 9px;
+        padding: 4px;
+      }
+    
+      .row {
+        margin: 0;
+      }
+    
+      .col-md-6,
+      .col-md-12,
+      .col-sm-12 {
+        padding-left: 2px;
+        padding-right: 2px;
+      }
+    }
+  </style>
+  {% comment %} <div class="main-content">
+    <h3>Student Section Loading....</h3>
+  </div> {% endcomment %}
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="form-card">
+        <h2 class="text-center mb-4">
+          <i class="bi bi-mortarboard-fill"></i>
+          Add Student
+        </h2>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label>Student Name</label>
+              <input type="text" name="name" class="form-control" placeholder="Enter Student Name" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Standard</label>
+              <select name="standard" id="standard" class="form-select" required>
+                <option value="">Select Standard</option>
+                {% for standard in standards %}
+                  <option value="{{ standard.standard_name }}">{{ standard.standard_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Class Teacher</label>
+              <input type="text" id="teacher_name" class="form-control teacher-field" placeholder="Teacher will appear here" readonly />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Roll Number</label>
+              <input type="text" id="roll_number" class="form-control" value="Auto Generated" readonly />
+            </div>
+            <div class="col-md-6 mb-3 col-lg-12 col-12">
+              <label>Phone Number</label>
+              <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" required />
+            </div>
+            <div class="col-md-12 mb-4">
+              <label>Email</label>
+              <input type="email" name="email" class="form-control" placeholder="Enter Email Address" required />
+            </div>
+          </div>
+          <button type="submit" class="btn-save">
+            <i class="bi bi-check-circle-fill"></i>
+            Add Student
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% comment %} <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const standardSelect = document.getElementById('standard')
+      const teacherInput = document.getElementById('teacher_name')
+    
+      standardSelect.addEventListener('change', function () {
+        const standard = this.value
+    
+        if (!standard) {
+          teacherInput.value = ''
+          return
+        }
+    
+        fetch(`/get-teacher/?standard=${encodeURIComponent(standard)}`)
+          .then((response) => response.json())
+          .then((data) => {
+            teacherInput.value = data.teacher_name || 'No Teacher Assigned'
+          })
+          .catch(() => {
+            teacherInput.value = 'Error Loading Teacher'
+          })
+      })
+    })
+  </script> {% endcomment %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const standardSelect = document.getElementById('standard')
+      const teacherInput = document.getElementById('teacher_name')
+      const rollInput = document.getElementById('roll_number')
+    
+      standardSelect.addEventListener('change', function () {
+        const standard = this.value
+    
+        if (!standard) {
+          teacherInput.value = ''
+          rollInput.value = 'Auto Generated'
+          return
+        }
+    
+        fetch(`/get-teacher/?standard=${encodeURIComponent(standard)}`)
+          .then((response) => response.json())
+          .then((data) => {
+            teacherInput.value = data.teacher_name || 'No Teacher Assigned'
+          })
+    
+        fetch(`/get-roll-number/?standard=${encodeURIComponent(standard)}`)
+          .then((response) => response.json())
+          .then((data) => {
+            rollInput.value = data.roll_number
+          })
+      })
+    })
+  </script>
+{% endblock %}

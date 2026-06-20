@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+      body {
+        background: linear-gradient(180deg, #12013a, #000000, #01000b);
+        min-height: 100vh;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+      }
+      .sidebar {
+        width: 260px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        height: 100vh;
+        position: fixed;
+        padding: 25px;
+      }
+      .main-content {
+        margin-left: 260px;
+        padding: 30px;
+      }
+      .nav-link {
+        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        transition: 0.3s;
+      }
+      .nav-link:hover {
+        background: #2563eb;
+        color: white;
+      }
+      .card-box {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        transition: 0.3s;
+      }
+      .card-box:hover {
+        transform: translateY(-5px);
+      }
+      .action-btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      
+        width: 100%;
+        min-height: 180px;
+        max-width: 360px !important;
+        text-decoration: none;
+        border: none;
+        border-radius: 20px;
+      
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+      
+        color: white;
+        transition: all 0.3s ease;
+      }
+      @media (max-width: 768px) {
+        .container-fluid {
+          padding: 0 10px !important;
+        }
+      
+        .form-card {
+          margin: 10px 0 !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          padding: 20px !important;
+        }
+      }
+      .action-btn:hover {
+        background: #2563eb;
+        color: white;
+        transform: translateY(-5px);
+      }
+      .activity-box {
+        margin-top: 30px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 20px;
+      }
+      @media (max-width: 991px) {
+        .sidebar {
+          display: none;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        .navbar-toggler {
+          border: 1px solid white;
+        }
+      }
+      @media (max-width: 218px) {
+        .sidebar {
+          display: none;
+        }
+      
+        .main-content {
+          margin-left: 0;
+          padding: 10px;
+        }
+      
+        h1 {
+          font-size: 1rem;
+        }
+      
+        .card-box,
+        .action-btn,
+        .activity-box {
+          padding: 10px;
+        }
+        .action-btn p {
+          font-size: 10px !important;
+        }
+      
+        .card-box h3 {
+          font-size: 1rem;
+        }
+      
+        .card-box p,
+        .activity-box li,
+        .action-btn h5 {
+          font-size: 0.7rem;
+        }
+      
+        .navbar {
+          padding: 5px !important;
+        }
+      
+        .navbar-toggler {
+          padding: 2px 4px;
+        }
+      }
+      .nav-link.active {
+        background: #2563eb;
+        color: white;
+      }
+      @media (max-width: 253px) {
+        .welcome {
+          font-size: 22px !important;
+          padding-left: 15px;
+        }
+      }
+      @media (max-width: 200px) {
+        .welcome {
+          font-size: 15px !important;
+          padding-left: 30px;
+        }
+      }
+      input[type='number']::-webkit-outer-spin-button,
+      input[type='number']::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      .alert {
+        width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        /*padding-right: 35px !important;*/
+      }
+      @media (max-width: 340px) and (min-width: 171px) {
+        .alert {
+          font-size: 10px !important;
+          padding: 8px 28px 8px 8px !important;
+          line-height: 1.3;
+          word-break: break-word;
+        }
+      
+        .alert .btn-close {
+          transform: scale(0.7);
+          top: 5px;
+          right: 5px;
+        }
+      }
+      @media (max-width: 170px) {
+        .alert {
+          font-size: 6px !important;
+          padding: 5px 20px 5px 5px !important;
+          line-height: 1.2;
+          word-break: keep-all;
+          border-radius: 5px !important;
+          font-weight: 700;
+        }
+      
+        .alert .btn-close {
+          transform: scale(0.45);
+          top: 2px;
+          right: 2px;
+          padding: 2px !important;
+        }
+      }
+      .card-box h3 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #60a5fa;
+        margin-bottom: 10px;
+      }
+      
+      @media (max-width: 768px) {
+        .card-box h3 {
+          font-size: 2rem;
+        }
+      }
+      
+      @media (max-width: 576px) {
+        .card-box h3 {
+          font-size: 1.7rem;
+        }
+      }
+      
+      @media (max-width: 218px) {
+        .card-box h3 {
+          font-size: 1rem;
+        }
+      }
+      
+      @media (max-width: 170px) {
+        .card-box h3 {
+          font-size: 0.7rem;
+          margin-bottom: 2px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-dark d-lg-none p-3">
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas"><span class="navbar-toggler-icon"></span></button>
+    </nav>
+
+    <div class="offcanvas offcanvas-start bg-dark text-white" id="sidebarOffcanvas" style="width: 260px;">
+      <div class="offcanvas-body">
+        <div class="text-center mb-4">
+          <h3><i class="bi bi-mortarboard-fill"></i> SchoolMS</h3>
+        </div>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'add_standard' %}">Add Standard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'add_teacher' %}">Add Teacher</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'add_student' %}">Add Student</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'view_students' %}">View Students</a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{% url 'view_standards' %}" class="nav-link">View Standards</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'admin_logout' %}" id="logout-btn" class="nav-link">
+              <span id="logout-text">Logout</span>
+              <span id="logout-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sidebar d-none d-lg-block">
+      <div class="text-center mb-4">
+        <h3><i class="bi bi-mortarboard-fill"></i> SchoolMS</h3>
+      </div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'add_standard' %}">Add Standard</a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'add_teacher' %}" class="text-decoration-none nav-link">Add Teacher</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'add_student' %}">Add Student</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'view_students' %}">View Students</a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'view_standards' %}" class="nav-link">View Standards</a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'admin_logout' %}" id="logout-btn" class="nav-link">
+            <span id="logout-text">Logout</span>
+            <span id="logout-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    {% block content %}
+      <main class="main-content">
+        <h1 class="mb-4 welcome d-block mx-auto">Welcome Admin</h1>
+        <div class="row g-4 justify-content-center">
+          <div class="col-lg-4">
+            <div class="card-box">
+              <h3>{{ total_standards }}</h3>
+              <p>Total Standards</p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card-box">
+              <h3>{{ total_teachers }}</h3>
+              <p>Total Teachers</p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card-box">
+              <h3>{{ total_students }}</h3>
+              <p>Total Students</p>
+            </div>
+          </div>
+        </div>
+        <div class="row g-4 mt-2 justify-content-center">
+          <div class="col-md-4 mb-4">
+            <a href="{% url 'add_standard' %}" class="action-btn">
+              <i class="bi bi-building fs-1 mb-3"></i>
+              <h5>Add Standard</h5>
+              <p class="mb-0">Create a new standard</p>
+            </a>
+          </div>
+
+          <div class="col-md-4 mb-4">
+            <a href="{% url 'add_teacher' %}" class="action-btn">
+              <i class="bi bi-person-workspace fs-1 mb-3"></i>
+              <h5>Add Teacher</h5>
+              <p class="mb-0">Register a new teacher</p>
+            </a>
+          </div>
+
+          <div class="col-md-4 mb-4">
+            <a href="{% url 'add_student' %}" class="action-btn">
+              <i class="bi bi-mortarboard fs-1 mb-3"></i>
+              <h5>Add Student</h5>
+              <p class="mb-0">Register a new student</p>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4 ">
+          <a href="{% url 'view_students' %}" class="action-btn">
+            <i class="bi bi-mortarboard fs-1 mb-3 text-center"></i>
+            <h5>View Students</h5>
+            <p>CRUD for Students</p>
+          </a>
+        </div>
+
+        {% comment %} <div class="activity-box">
+          <h4>Recent Activities</h4>
+          <ul class="list-unstyled">
+            <li>• New Standard Added</li>
+            <li>• Teacher Registered</li>
+            <li>• Student Added</li>
+          </ul>
+        </div> {% endcomment %}
+      </main>
+    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.getElementById('logout-btn').addEventListener('click', function (e) {
+        e.preventDefault()
+      
+        document.getElementById('logout-text').textContent = 'Logging out...'
+        document.getElementById('logout-spinner').classList.remove('d-none')
+      
+        setTimeout(() => {
+          window.location.href = this.href
+        }, 1000)
+      })
+    </script>
+  </body>
+</html>
