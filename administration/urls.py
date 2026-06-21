@@ -59,4 +59,7 @@ urlpatterns = [
         views.teacher_view_students,
         name="teacher_view_students",
     ),
+    path("view-teachers/", views.view_teachers, name="view_teachers"),
+    path("edit-teacher/<int:id>/", views.edit_teacher, name="edit_teacher"),
+    path("delete-teacher/<int:id>/", views.delete_teacher, name="delete_teacher"),
 ]

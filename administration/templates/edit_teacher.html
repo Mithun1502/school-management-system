@@ -1,0 +1,328 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+  <style>
+    .edit-teacher-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .main-content h2 {
+      color: #fff;
+      margin-bottom: 25px;
+      font-size: 38px;
+      text-align: center;
+    }
+    
+    form {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    form div {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    label {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    input,
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      outline: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 16px;
+    }
+    
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #00b894;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+    
+    @media (max-width: 1040px) {
+      .main-content {
+        max-width: 100%;
+        padding: 20px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px 15px;
+      }
+    
+      .main-content h2 {
+        font-size: 32px;
+      }
+    
+      form {
+        padding: 25px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .main-content {
+        padding: 12px;
+      }
+    
+      .main-content h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+    
+      form {
+        padding: 18px;
+        border-radius: 18px;
+      }
+    
+      label {
+        font-size: 16px;
+      }
+    
+      input,
+      textarea,
+      select,
+      button {
+        font-size: 15px;
+        padding: 12px;
+      }
+    }
+    
+    @media (max-width: 375px) {
+      .main-content {
+        padding: 10px;
+      }
+    
+      .main-content h2 {
+        font-size: 24px;
+      }
+    
+      form {
+        padding: 15px;
+      }
+    
+      label {
+        font-size: 15px;
+      }
+    
+      input,
+      textarea,
+      select,
+      button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+    
+    @media (max-width: 250px) {
+      .main-content {
+        padding: 5px;
+      }
+    
+      .main-content h2 {
+        font-size: 18px;
+        word-break: break-word;
+      }
+    
+      form {
+        padding: 10px;
+        border-radius: 12px;
+      }
+    
+      label {
+        font-size: 12px;
+      }
+    
+      input,
+      textarea,
+      select {
+        font-size: 11px;
+        padding: 8px;
+      }
+    
+      button {
+        font-size: 12px;
+        padding: 8px;
+      }
+    }
+    
+    @media (max-width: 200px) {
+      .main-content {
+        padding: 3px;
+      }
+    
+      .main-content h2 {
+        font-size: 15px;
+        line-height: 1.2;
+      }
+    
+      form {
+        padding: 6px;
+        border-radius: 8px;
+      }
+    
+      label {
+        font-size: 10px;
+      }
+    
+      input,
+      textarea,
+      select {
+        font-size: 9px;
+        padding: 6px;
+      }
+    
+      button {
+        font-size: 10px;
+        padding: 6px;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      .main-content {
+        padding: 2px;
+      }
+    
+      .main-content h2 {
+        font-size: 12px;
+        line-height: 1.1;
+      }
+    
+      form {
+        padding: 4px;
+        border-radius: 6px;
+      }
+    
+      label {
+        font-size: 8px;
+      }
+    
+      input,
+      textarea,
+      select {
+        font-size: 7px;
+        padding: 4px;
+      }
+    
+      button {
+        font-size: 8px;
+        padding: 5px;
+      }
+    }
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      outline: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 16px;
+    }
+    select option {
+      color: black;
+      background: rgba(255, 255, 255, 0.12) !important;
+    }
+  </style>
+
+  <div class="main-content">
+    <div class="edit-teacher-container">
+      <h2>Edit Teacher</h2>
+      <form method="POST">
+        {% csrf_token %}
+        <div>
+          <label>Name</label>
+          <input type="text" name="name" value="{{ teacher.name }}" required />
+        </div>
+        <br />
+        <div>
+          <label>Standard</label>
+          <select name="standard" required>
+            {% for standard in standards %}
+              {% if teacher.standard == standard.standard_name %}
+                <option value="{{ standard.standard_name }}" selected="selected">{{ standard.standard_name }}</option>
+              {% else %}
+                <option value="{{ standard.standard_name }}">{{ standard.standard_name }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+        <br />
+        <div>
+          <label>Phone</label>
+          <input type="text" name="phone" value="{{ teacher.phone }}" required />
+        </div>
+        <br />
+        <div>
+          <label>Email</label>
+          <input type="email" name="email" value="{{ teacher.email }}" required />
+        </div>
+        <br />
+        <div>
+          <label>Username</label>
+          <input type="text" name="username" value="{{ teacher.username }}" required />
+        </div>
+        <br />
+        <div>
+          <label>Address</label>
+          <textarea name="address" required>{{ teacher.address }}</textarea>
+        </div>
+        <br />
+        <div>
+          <label>Bank Account Number</label>
+          <input type="text" name="bank_account_number" value="{{ teacher.bank_account_number }}" required />
+        </div>
+        <br />
+        <div>
+          <label>Bank Branch</label>
+          <input type="text" name="bank_branch" value="{{ teacher.bank_branch }}" required />
+        </div>
+        <br />
+        <div>
+          <label>IFSC Code</label>
+          <input type="text" name="ifsc_code" value="{{ teacher.ifsc_code }}" required />
+        </div>
+        <br />
+        <button type="submit">Update Teacher</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -15,8 +15,11 @@ import re
 # json response for ajax
 from django.http import JsonResponse
 
+# 404 error kaaga
+from django.shortcuts import get_object_or_404
 
-# main- school_admin login
+
+# main - school_admin login
 def admin_login(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -160,11 +163,19 @@ def add_teacher(request):
             messages.error(request, f"{standard} already has a teacher assigned")
             return redirect("add_teacher")
 
+        if len(address) < 10 or len(address) > 200:
+            messages.error(request, "Address must be between 10 and 200 characters")
+            return redirect("add_teacher")
+
         if not re.match(r"^[6789]\d{9}$", phone):
             messages.error(
                 request,
                 "Phone number must be 10 digits and start with 6, 7, 8 or 9",
             )
+            return redirect("add_teacher")
+
+        if Teacher.objects.filter(bank_account_number=bank_account_number).exists():
+            messages.error(request, "Bank account number already exists")
             return redirect("add_teacher")
 
         if not re.match(r"^[a-zA-Z0-9_.]+@gmail\.com$", email):
@@ -177,7 +188,11 @@ def add_teacher(request):
                 "Username must start with a letter and contain 4-20 characters",
             )
             return redirect("add_teacher")
+        reserved_usernames = ["admin", "school_admin", "root", "teacher", "student"]
 
+        if username.lower() in reserved_usernames:
+            messages.error(request, "This username is not allowed")
+            return redirect("add_teacher")
         if not re.match(
             r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$",
             password,
@@ -204,6 +219,32 @@ def add_teacher(request):
             messages.error(request, "Phone number already exists")
             return redirect("add_teacher")
 
+        if len(email) > 100:
+            messages.error(request, "Email is too long")
+            return redirect("add_teacher")
+        if not re.match(r"^[A-Za-z ]{3,50}$", bank_branch):
+            messages.error(
+                request,
+                "Bank branch must contain only letters and spaces (3-50 characters)",
+            )
+            return redirect("add_teacher")
+
+        if not re.match(r"^\d{9,18}$", bank_account_number):
+            messages.error(request, "Bank account number must be 9-18 digits")
+            return redirect("add_teacher")
+
+        if not re.match(r"^[A-Z]{4}0[A-Z0-9]{6}$", ifsc_code):
+            messages.error(request, "Enter a valid IFSC code")
+            return redirect("add_teacher")
+
+        if "  " in name:
+            messages.error(request, "Multiple spaces are not allowed in name")
+            return redirect("add_teacher")
+
+        if "  " in bank_branch:
+            messages.error(request, "Multiple spaces are not allowed in branch name")
+            return redirect("add_teacher")
+
         Teacher.objects.create(
             name=name,
             standard=standard,
@@ -224,6 +265,7 @@ def add_teacher(request):
 
 
 def add_standard(request):
+
     if not request.session.get("admin_logged_in"):
         messages.error(request, "Please login first")
         return redirect("admin_login")
@@ -372,6 +414,14 @@ def add_student(request):
 
         if Student.objects.filter(phone=phone).exists():
             messages.error(request, "Phone Number already exists")
+            return redirect("add_student")
+
+        if not re.match(r"^[6789]\d{9}$", phone):
+            messages.error(request, "Enter valid phone number")
+            return redirect("add_student")
+
+        if not re.match(r"^[a-zA-Z0-9_.]+@gmail\.com$", email):
+            messages.error(request, "Only Gmail addresses allowed")
             return redirect("add_student")
 
         teacher = Teacher.objects.filter(standard=standard).first()
@@ -702,3 +752,245 @@ def teacher_delete_student(request, id):
     messages.success(request, "Student Deleted Successfully")
 
     return redirect("teacher_view_students")
+
+
+def view_teachers(request):
+
+    if not request.session.get("admin_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("admin_login")
+
+    teachers = Teacher.objects.all().order_by("standard")
+
+    teacher_data = []
+
+    for teacher in teachers:
+
+        student_count = Student.objects.filter(teacher=teacher).count()
+
+        teacher_data.append(
+            {
+                "teacher": teacher,
+                "student_count": student_count,
+            }
+        )
+
+    return render(
+        request,
+        "view_teachers.html",
+        {
+            "teacher_data": teacher_data,
+        },
+    )
+
+
+def edit_teacher(request, id):
+
+    if not request.session.get("admin_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("admin_login")
+
+    teacher = get_object_or_404(Teacher, id=id)
+
+    if request.method == "POST":
+
+        name = request.POST.get("name", "").strip()
+        standard = request.POST.get("standard", "").strip()
+        phone = request.POST.get("phone", "").strip()
+        email = request.POST.get("email", "").strip().lower()
+        username = request.POST.get("username", "").strip()
+        address = request.POST.get("address", "").strip()
+        bank_account_number = request.POST.get("bank_account_number", "").strip()
+        bank_branch = request.POST.get("bank_branch", "").strip()
+        ifsc_code = request.POST.get("ifsc_code", "").strip().upper()
+
+        if not all(
+            [
+                name,
+                standard,
+                phone,
+                email,
+                username,
+                address,
+                bank_account_number,
+                bank_branch,
+                ifsc_code,
+            ]
+        ):
+            messages.error(request, "All fields are required")
+            return redirect("edit_teacher", id=id)
+
+        if not re.match(r"^[A-Za-z ]{3,25}$", name):
+            messages.error(
+                request,
+                "Name must contain only letters and spaces (3-25 characters)",
+            )
+            return redirect("edit_teacher", id=id)
+
+        if not Standard.objects.filter(standard_name=standard).exists():
+            messages.error(request, "Selected standard does not exist")
+            return redirect("edit_teacher", id=id)
+
+        if Teacher.objects.filter(standard=standard).exclude(id=id).exists():
+
+            messages.error(request, f"{standard} already has a teacher assigned")
+            return redirect("edit_teacher", id=id)
+
+        if len(address) < 10 or len(address) > 200:
+            messages.error(request, "Address must be between 10 and 200 characters")
+            return redirect("edit_teacher", id=id)
+
+        if not re.match(r"^[6789]\d{9}$", phone):
+            messages.error(
+                request,
+                "Phone number must be 10 digits and start with 6, 7, 8 or 9",
+            )
+            return redirect("edit_teacher", id=id)
+
+        if (
+            Teacher.objects.filter(bank_account_number=bank_account_number)
+            .exclude(id=id)
+            .exists()
+        ):
+
+            messages.error(request, "Bank account number already exists")
+            return redirect("edit_teacher", id=id)
+
+        if not re.match(r"^[a-zA-Z0-9_.]+@gmail\.com$", email):
+            messages.error(request, "Only Gmail addresses are allowed")
+            return redirect("edit_teacher", id=id)
+
+        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]{3,19}$", username):
+            messages.error(
+                request,
+                "Username must start with a letter and contain 4-20 characters",
+            )
+            return redirect("edit_teacher", id=id)
+
+        reserved_usernames = [
+            "admin",
+            "school_admin",
+            "root",
+            "teacher",
+            "student",
+        ]
+
+        if username.lower() in reserved_usernames:
+            messages.error(request, "This username is not allowed")
+            return redirect("edit_teacher", id=id)
+
+        if Teacher.objects.filter(username=username).exclude(id=id).exists():
+
+            messages.error(request, "Username already exists")
+            return redirect("edit_teacher", id=id)
+
+        if Teacher.objects.filter(email=email).exclude(id=id).exists():
+
+            messages.error(request, "Email already exists")
+            return redirect("edit_teacher", id=id)
+
+        if Teacher.objects.filter(phone=phone).exclude(id=id).exists():
+
+            messages.error(request, "Phone number already exists")
+            return redirect("edit_teacher", id=id)
+
+        if " " in email:
+            messages.error(
+                request,
+                "Email cannot contain spaces"
+            )
+            return redirect("edit_teacher", id=id)
+
+        if " " in username:
+            messages.error(
+                request,
+                "Username cannot contain spaces"
+            )
+            return redirect("edit_teacher", id=id)
+
+        if len(email) > 100:
+            messages.error(request, "Email is too long")
+            return redirect("edit_teacher", id=id)
+
+        if not re.match(r"^[A-Za-z ]{3,50}$", bank_branch):
+            messages.error(
+                request,
+                "Bank branch must contain only letters and spaces (3-50 characters)",
+            )
+            return redirect("edit_teacher", id=id)
+
+        if not re.match(r"^\d{9,18}$", bank_account_number):
+            messages.error(request, "Bank account number must be 9-18 digits")
+            return redirect("edit_teacher", id=id)
+
+        if not re.match(r"^[A-Z]{4}0[A-Z0-9]{6}$", ifsc_code):
+            messages.error(request, "Enter a valid IFSC code")
+            return redirect("edit_teacher", id=id)
+
+        if "  " in name:
+            messages.error(request, "Multiple spaces are not allowed in name")
+            return redirect("edit_teacher", id=id)
+
+        if "  " in bank_branch:
+            messages.error(request, "Multiple spaces are not allowed in branch name")
+            return redirect("edit_teacher", id=id)
+
+        teacher.name = name
+        teacher.standard = standard
+        teacher.phone = phone
+        teacher.email = email
+        teacher.username = username
+        teacher.address = address
+        teacher.bank_account_number = bank_account_number
+        teacher.bank_branch = bank_branch
+        teacher.ifsc_code = ifsc_code
+
+        teacher.save()
+
+        messages.success(request, "Teacher Updated Successfully")
+
+        return redirect("view_teachers")
+
+    standards = Standard.objects.all().order_by("standard_name")
+
+    return render(
+        request,
+        "edit_teacher.html",
+        {
+            "teacher": teacher,
+            "standards": standards,
+        },
+    )
+
+
+def delete_teacher(request, id):
+
+    if not request.session.get("admin_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("admin_login")
+
+    teacher = get_object_or_404(Teacher, id=id)
+
+    student_count = Student.objects.filter(teacher=teacher).count()
+
+    if student_count > 0:
+        messages.error(request, "Cannot delete teacher. Students are assigned.")
+        return redirect("view_teachers")
+
+    teacher.delete()
+
+    messages.success(request, "Teacher Deleted Successfully")
+
+    return redirect("view_teachers")
+
+    if not request.session.get("admin_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("admin_login")
+
+    teacher = get_object_or_404(Teacher, id=id)
+
+    teacher.delete()
+
+    messages.success(request, "Teacher Deleted Successfully")
+
+    return redirect("view_teachers")

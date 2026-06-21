@@ -5,10 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>School Admin Login</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-
     <style>
       * {
         margin: 0;
@@ -16,7 +14,6 @@
         box-sizing: border-box;
         overflow: hidden;
       }
-      
       body {
         min-height: 100vh;
         background: linear-gradient(135deg, #003126, #365f69, #01253f);
@@ -25,7 +22,6 @@
         align-items: center;
         padding: 20px;
       }
-      
       .login-card {
         width: 100%;
         max-width: 420px;
@@ -36,7 +32,6 @@
         padding: 35px 25px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       }
-      
       .logo-circle {
         width: 80px;
         height: 80px;
@@ -293,13 +288,11 @@
           this.classList.add('bi-eye-slash')
         }
       })
-      
-      // Basic client-side validation
       const loginForm = document.getElementById('loginForm')
       
       loginForm.addEventListener('submit', function (e) {
         const username = document.getElementById('username').value.trim()
-        const password = document.getElementById('password').value.trim()
+        const password = document.getElementById('password').value.trizm()
       
         if (username === '' || password === '') {
           e.preventDefault()
@@ -322,9 +315,9 @@
       
         btn.disabled = true
         btn.innerHTML = `
-                                                                                    <span class="spinner-border spinner-border-sm me-2"></span>
-                                                                                    Logging in...
-                                                                                  `
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                    Logging in...
+                                    `
       
         setTimeout(() => {
           form.submit()
