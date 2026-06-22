@@ -65,19 +65,22 @@ def user_login(request):
         if teacher and check_password(password, teacher.password):
             request.session["teacher_id"] = teacher.id
             request.session["teacher_name"] = teacher.name
+
             return redirect("teacher_dashboard")
 
-        # Dummy Student Login
-        elif username == "student" and password == "student123":
+        # Student Login
+        student = Student.objects.filter(username=username).first()
 
-            request.session["student_logged_in"] = True
-            request.session["student_name"] = "Student"
+        if student and check_password(password, student.password):
+
+            request.session["student_id"] = student.id
+            request.session["student_name"] = student.name
 
             messages.success(request, "Student Login Successful")
+
             return redirect("student_dashboard")
 
-        else:
-            messages.error(request, "Invalid Credentials")
+        messages.error(request, "Invalid Credentials")
 
     return render(request, "user_login.html")
 
@@ -94,11 +97,17 @@ def teacher_dashboard(request):
 
 def student_dashboard(request):
 
-    if not request.session.get("student_logged_in"):
+    if not request.session.get("student_id"):
         messages.error(request, "Please login first")
         return redirect("user_login")
 
-    return render(request, "student_dashboard.html")
+    student = Student.objects.get(id=request.session["student_id"])
+
+    return render(
+        request,
+        "student_dashboard.html",
+        {"student": student},
+    )
 
 
 def teacher_logout(request):
@@ -462,7 +471,9 @@ def view_standards(request):
         messages.error(request, "Please login first")
         return redirect("admin_login")
 
-    standards = Standard.objects.all().order_by("standard_name")
+    standards = sorted(
+        Standard.objects.all(), key=lambda x: int(x.standard_name.split()[-1])
+    )
     return render(request, "view_standards.html", {"standards": standards})
 
 
@@ -545,7 +556,9 @@ def add_student(request):
         messages.error(request, "Please login first")
         return redirect("admin_login")
 
-    standards = Standard.objects.all().order_by("standard_name")
+    standards = sorted(
+        Standard.objects.all(), key=lambda x: int(x.standard_name.split()[-1])
+    )
 
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -553,8 +566,10 @@ def add_student(request):
 
         phone = request.POST.get("phone", "").strip()
         email = request.POST.get("email", "").strip().lower()
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
 
-        if not all([name, standard, phone, email]):
+        if not all([name, standard, phone, email, username, password]):
             messages.error(request, "All fields are required")
             return render(
                 request,
@@ -648,6 +663,34 @@ def add_student(request):
                 },
             )
 
+        if not re.match(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$",
+            password,
+        ):
+            messages.error(
+                request,
+                "Password must contain uppercase, lowercase, number and special character",
+            )
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
+
+        if Student.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
+
         if not re.match(r"^[a-zA-Z0-9_.]+@gmail\.com$", email):
             messages.error(request, "Only Gmail addresses allowed")
             return render(
@@ -674,10 +717,12 @@ def add_student(request):
 
         Student.objects.create(
             name=name,
-            standard=standard,
-            roll_number=generate_roll_number(standard),
+            standard=teacher.standard,
+            roll_number=generate_roll_number(teacher.standard),
             phone=phone,
             email=email,
+            username=username,
+            password=make_password(password),
             teacher=teacher,
         )
 
@@ -723,6 +768,8 @@ def teacher_add_student(request):
         phone = request.POST.get("phone", "").strip()
         email = request.POST.get("email", "").strip().lower()
 
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
         context = {
             "teacher": teacher,
             "roll_number": generate_roll_number(teacher.standard),
@@ -730,7 +777,7 @@ def teacher_add_student(request):
             "phone": phone,
             "email": email,
         }
-        if not all([name, phone, email]):
+        if not all([name, phone, email, username, password]):
             messages.error(request, "All fields are required")
             return render(
                 request,
@@ -745,7 +792,29 @@ def teacher_add_student(request):
                 "teacher_add_student.html",
                 context,
             )
+        if not re.match(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$",
+            password,
+        ):
+            messages.error(
+                request,
+                "Password must contain uppercase, lowercase, number and special character",
+            )
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
 
+        if Student.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
+                
+     
         if not re.match(r"^[A-Za-z ]{3,25}$", name):
             messages.error(
                 request,
@@ -799,6 +868,8 @@ def teacher_add_student(request):
             roll_number=generate_roll_number(teacher.standard),
             phone=phone,
             email=email,
+            username=username,
+            password=make_password(password),
             teacher=teacher,
         )
 
@@ -830,7 +901,9 @@ def view_students(request):
         messages.error(request, "Please login first")
         return redirect("admin_login")
 
-    standards = Standard.objects.all().order_by("standard_name")
+    standards = sorted(
+        Standard.objects.all(), key=lambda x: int(x.standard_name.split()[-1])
+    )
 
     standard_data = []
 
@@ -980,6 +1053,21 @@ def teacher_edit_student(request, id):
 
         if not re.match(r"^[6789]\d{9}$", phone):
             messages.error(request, "Enter valid phone number")
+            return redirect("teacher_edit_student", id=id)
+
+        if (
+            Student.objects.filter(name__iexact=name, standard=student.standard)
+            .exclude(id=id)
+            .exists()
+        ):
+
+            messages.error(
+                request, f"Student '{name}' already exists in {student.standard}"
+            )
+            return redirect("teacher_edit_student", id=id)
+
+        if "  " in name:
+            messages.error(request, "Multiple spaces are not allowed in student name")
             return redirect("teacher_edit_student", id=id)
 
         if Student.objects.filter(email=email).exclude(id=id).exists():
@@ -1267,33 +1355,14 @@ def delete_teacher(request, id):
 
     return redirect("view_teachers")
 
-    if not request.session.get("admin_logged_in"):
-        messages.error(request, "Please login first")
-        return redirect("admin_login")
-
-    teacher = get_object_or_404(Teacher, id=id)
-
-    teacher.delete()
-
-    messages.success(request, "Teacher Deleted Successfully")
-
-    return redirect("view_teachers")
-
 
 def student_profile(request):
 
-    if not request.session.get("student_logged_in"):
+    if not request.session.get("student_id"):
         messages.error(request, "Please login first")
         return redirect("user_login")
 
-    student = {
-        "name": request.session.get("student_name", "Student"),
-        "roll_number": "1001",
-        "standard": "STANDARD 10",
-        "phone": "9876543210",
-        "email": "student@gmail.com",
-        "teacher_name": "Teacher",
-    }
+    student = Student.objects.get(id=request.session["student_id"])
 
     return render(
         request,

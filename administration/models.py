@@ -31,6 +31,9 @@ class Student(models.Model):
     roll_number = models.CharField(max_length=20, unique=True)
     phone = models.CharField(max_length=15)
     email = models.EmailField(unique=True)
+    username = models.CharField(max_length=50, unique=True, null=False)
+    password = models.CharField(max_length=255, default="", null=False)
+
     teacher = models.ForeignKey(
         Teacher,
         on_delete=models.CASCADE,
