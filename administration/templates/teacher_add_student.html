@@ -267,7 +267,17 @@
             <small class="text-danger" id="emailError"></small>
           </div>
         </div>
+        <div class="col-md-6 mb-3">
+          <label>Username</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" value="{{ username|default:'' }}" required />
+          <small class="text-danger" id="usernameError"></small>
+        </div>
 
+        <div class="col-md-6 mb-3">
+          <label>Password</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required />
+          <small class="text-danger" id="passwordError"></small>
+        </div>
         <button type="submit" class="btn btn-success mt-3">Add Student</button>
       </form>
     </div>
@@ -280,7 +290,11 @@
       const nameField = document.getElementById('name')
       const phoneField = document.getElementById('phone')
       const emailField = document.getElementById('email')
+      const usernameField = document.getElementById('username')
+      const passwordField = document.getElementById('password')
     
+      const usernameError = document.getElementById('usernameError')
+      const passwordError = document.getElementById('passwordError')
       const nameError = document.getElementById('nameError')
       const phoneError = document.getElementById('phoneError')
       const emailError = document.getElementById('emailError')
@@ -289,10 +303,14 @@
       nameError.textContent = ''
       phoneError.textContent = ''
       emailError.textContent = ''
+      usernameError.textContent = ''
+      passwordError.textContent = ''
     
       const name = nameField.value.trim()
       const phone = phoneField.value.trim()
       const email = emailField.value.trim()
+      const username = usernameField.value.trim()
+      const password = passwordField.value.trim()
     
       // Name validation
       if (name === '') {
@@ -300,6 +318,9 @@
         isValid = false
       } else if (!/^[A-Za-z\s]{3,25}$/.test(name)) {
         nameError.textContent = 'Only letters allowed (3-25 characters)'
+        isValid = false
+      } else if (name.includes('  ')) {
+        nameError.textContent = 'Multiple spaces are not allowed in student name'
         isValid = false
       }
     
@@ -319,8 +340,26 @@
       } else if (!/^[a-zA-Z0-9_.]+@gmail\.com$/.test(email)) {
         emailError.textContent = 'Only Gmail addresses are allowed'
         isValid = false
+      } else if (email.includes(' ')) {
+        emailError.textContent = 'Email cannot contain spaces'
+        isValid = false
       }
-    
+      //Username Validation
+      if (username === '') {
+        usernameError.textContent = 'Username is required'
+        isValid = false
+      } else if (!/^[a-zA-Z][a-zA-Z0-9_]{3,19}$/.test(username)) {
+        usernameError.textContent = 'Username must start with a letter and contain 4-20 characters'
+        isValid = false
+      }
+      //Password Validation
+      if (password === '') {
+        passwordError.textContent = 'Password is required'
+        isValid = false
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/.test(password)) {
+        passwordError.textContent = 'Password must contain uppercase, lowercase, number and special character'
+        isValid = false
+      }
       if (!isValid) {
         e.preventDefault()
       }

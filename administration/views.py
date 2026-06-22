@@ -680,6 +680,19 @@ def add_student(request):
                 },
             )
 
+        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]{3,19}$", username):
+            messages.error(
+                request,
+                "Username must start with a letter and contain 4-20 characters",
+            )
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
         if Student.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return render(
@@ -813,8 +826,17 @@ def teacher_add_student(request):
                 "teacher_add_student.html",
                 context,
             )
-                
-     
+
+        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]{3,19}$", username):
+            messages.error(
+                request,
+                "Username must start with a letter and contain 4-20 characters",
+            )
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
         if not re.match(r"^[A-Za-z ]{3,25}$", name):
             messages.error(
                 request,
@@ -940,8 +962,10 @@ def admin_edit_student(request, id):
         name = request.POST.get("name", "").strip()
         phone = request.POST.get("phone", "").strip()
         email = request.POST.get("email", "").strip().lower()
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
 
-        if not all([name, phone, email]):
+        if not all([name, phone, email, username]):
             messages.error(request, "All fields are required")
             return redirect("admin_edit_student", id=id)
 
@@ -968,10 +992,37 @@ def admin_edit_student(request, id):
             messages.error(request, "Phone Number already exists")
             return redirect("admin_edit_student", id=id)
 
+        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]{3,19}$", username):
+            messages.error(
+                request,
+                "Username must start with a letter and contain 4-20 characters",
+            )
+            return redirect("admin_edit_student", id=id)
+
+        if Student.objects.filter(username=username).exclude(id=id).exists():
+            messages.error(request, "Username already exists")
+            return redirect("admin_edit_student", id=id)
+
+        if password and not re.match(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$",
+            password,
+        ):
+            messages.error(
+                request,
+                "Password must contain uppercase, lowercase, number and special character",
+            )
+            return redirect("admin_edit_student", id=id)
+
         student.name = name
         student.phone = phone
         student.email = email
+        student.username = username
+
+        if password:
+            student.password = make_password(password)
+
         student.save()
+
 
         messages.success(request, "Student Updated Successfully")
 
@@ -1036,7 +1087,10 @@ def teacher_edit_student(request, id):
         phone = request.POST.get("phone", "").strip()
         email = request.POST.get("email", "").strip().lower()
 
-        if not all([name, phone, email]):
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+
+        if not all([name, phone, email, username]):
             messages.error(request, "All fields are required")
             return redirect("teacher_edit_student", id=id)
 
@@ -1045,6 +1099,17 @@ def teacher_edit_student(request, id):
                 request,
                 "Student name must contain only letters and spaces (3-25 characters)",
             )
+            return redirect("teacher_edit_student", id=id)
+
+        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]{3,19}$", username):
+            messages.error(
+                request,
+                "Username must start with a letter and contain 4-20 characters",
+            )
+            return redirect("teacher_edit_student", id=id)
+
+        if Student.objects.filter(username=username).exclude(id=id).exists():
+            messages.error(request, "Username already exists")
             return redirect("teacher_edit_student", id=id)
 
         if not re.match(r"^[a-zA-Z0-9_.]+@gmail\.com$", email):
@@ -1081,6 +1146,11 @@ def teacher_edit_student(request, id):
         student.name = name
         student.phone = phone
         student.email = email
+        student.username = username
+
+        if password:
+            student.password = make_password(password)
+
         student.save()
 
         messages.success(request, "Student Updated Successfully")

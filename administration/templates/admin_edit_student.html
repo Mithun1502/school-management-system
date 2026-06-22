@@ -188,36 +188,36 @@
       }
     }
     .table-container,
-.table-responsive {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.table {
-    margin-bottom: 0;
-    color: white;
-    background: transparent !important;
-}
-
-.table thead {
-    background: rgba(255,255,255,0.08);
-}
-
-.table thead th {
-    color: white;
-    border: none;
-}
-
-.table tbody tr {
-    background: transparent !important;
-}
-
-.table tbody td {
-    color: white;
-    border-color: rgba(255,255,255,0.1);
-}
+    .table-responsive {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    
+    .table {
+      margin-bottom: 0;
+      color: white;
+      background: transparent !important;
+    }
+    
+    .table thead {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .table thead th {
+      color: white;
+      border: none;
+    }
+    
+    .table tbody tr {
+      background: transparent !important;
+    }
+    
+    .table tbody td {
+      color: white;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
   </style>
 
   <div class="container-fluid">
@@ -229,12 +229,13 @@
 
       <hr />
 
-      <form method="POST">
+      <form method="POST" id="editStudentForm">
         {% csrf_token %}
 
         <div class="mb-4">
           <label class="form-label">Student Name</label>
           <input type="text" name="name" class="form-control" value="{{ student.name }}" required />
+          <small id="nameError" class="text-danger"></small>
         </div>
 
         <div class="mb-4">
@@ -250,13 +251,25 @@
         <div class="mb-4">
           <label class="form-label">Phone Number</label>
           <input type="text" name="phone" class="form-control" value="{{ student.phone }}" required />
+          <small id="phoneError" class="text-danger"></small>
         </div>
 
         <div class="mb-4">
           <label class="form-label">Email Address</label>
           <input type="email" name="email" class="form-control" value="{{ student.email }}" required />
+          <small id="emailError" class="text-danger"></small>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Username</label>
+          <input type="text" id="username" name="username" class="form-control" value="{{ student.username }}" required />
+          <small id="usernameError" class="text-danger"></small>
         </div>
 
+        <div class="mb-4">
+          <label class="form-label">Password</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter new password" />
+          <small id="passwordError" class="text-danger"></small>
+        </div>
         <div class="mb-4">
           <label class="form-label">Class Teacher</label>
           <input type="text" class="form-control" value="{{ student.teacher.name }}" readonly />
@@ -276,4 +289,76 @@
       </form>
     </div>
   </div>
+  <script>
+    document.getElementById('editStudentForm').addEventListener('submit', function (e) {
+      let isValid = true
+    
+      const name = document.querySelector('input[name="name"]').value.trim()
+      const phone = document.querySelector('input[name="phone"]').value.trim()
+      const email = document.querySelector('input[name="email"]').value.trim()
+      const username = document.getElementById('username').value.trim()
+      const password = document.getElementById('password').value.trim()
+    
+      const nameError = document.getElementById('nameError')
+      const phoneError = document.getElementById('phoneError')
+      const emailError = document.getElementById('emailError')
+      const usernameError = document.getElementById('usernameError')
+      const passwordError = document.getElementById('passwordError')
+    
+      nameError.textContent = ''
+      phoneError.textContent = ''
+      emailError.textContent = ''
+      usernameError.textContent = ''
+      passwordError.textContent = ''
+    
+      if (name === '') {
+        nameError.textContent = 'Student name is required'
+        isValid = false
+      } else if (!/^[A-Za-z ]{3,25}$/.test(name)) {
+        nameError.textContent = 'Student name must contain only letters and spaces (3-25 characters)'
+        isValid = false
+      } else if (name.includes('  ')) {
+        nameError.textContent = 'Multiple spaces are not allowed in student name'
+        isValid = false
+      }
+    
+      if (phone === '') {
+        phoneError.textContent = 'Phone number is required'
+        isValid = false
+      } else if (!/^[6789]\d{9}$/.test(phone)) {
+        phoneError.textContent = 'Enter valid phone number'
+        isValid = false
+      }
+    
+      if (email === '') {
+        emailError.textContent = 'Email is required'
+        isValid = false
+      } else if (email.includes(' ')) {
+        emailError.textContent = 'Email cannot contain spaces'
+        isValid = false
+      } else if (!/^[a-zA-Z0-9_.]+@gmail\.com$/.test(email)) {
+        emailError.textContent = 'Only Gmail addresses allowed'
+        isValid = false
+      }
+    
+      if (username === '') {
+        usernameError.textContent = 'Username is required'
+        isValid = false
+      } else if (!/^[a-zA-Z][a-zA-Z0-9_]{3,19}$/.test(username)) {
+        usernameError.textContent = 'Username must start with a letter and contain 4-20 characters'
+        isValid = false
+      }
+    
+      if (password !== '') {
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/.test(password)) {
+          passwordError.textContent = 'Password must contain uppercase, lowercase, number and special character'
+          isValid = false
+        }
+      }
+    
+      if (!isValid) {
+        e.preventDefault()
+      }
+    })
+  </script>
 {% endblock %}

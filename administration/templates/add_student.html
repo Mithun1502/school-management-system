@@ -360,6 +360,17 @@
               <input type="email" value="{{ form_data.email|default:'' }}" name="email" class="form-control" placeholder="Enter Email Address" autocomplete="off" required />
               <small id="emailError" class="text-danger"></small>
             </div>
+            <div class="col-md-6 mb-3">
+              <label>Username</label>
+              <input type="text" name="username" id="username" value="{{ form_data.username|default:'' }}" class="form-control" placeholder="Enter Username" autocomplete="off" required />
+              <small id="usernameError" class="text-danger"></small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Password</label>
+              <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" required />
+              <small id="passwordError" class="text-danger"></small>
+            </div>
           </div>
           <button type="submit" class="btn-save">
             <i class="bi bi-check-circle-fill"></i>
@@ -433,7 +444,11 @@
       const phone = document.querySelector('input[name="phone"]')
       const email = document.querySelector('input[name="email"]')
       const standard = document.querySelector('select[name="standard"]')
+      const username = document.querySelector('input[name="username"]')
+      const password = document.querySelector('input[name="password"]')
     
+      const usernameError = document.getElementById('usernameError')
+      const passwordError = document.getElementById('passwordError')
       const nameError = document.getElementById('nameError')
       const phoneError = document.getElementById('phoneError')
       const emailError = document.getElementById('emailError')
@@ -444,6 +459,8 @@
         phoneError.textContent = ''
         emailError.textContent = ''
         standardError.textContent = ''
+        usernameError.textContent = ''
+        passwordError.textContent = ''
       }
     
       name.addEventListener('input', () => {
@@ -501,6 +518,8 @@
         const phoneNumber = phone.value.trim()
         const emailValue = email.value.trim()
         const standardValue = standard.value.trim()
+        const usernameValue = username.value.trim()
+        const passwordValue = password.value.trim()
     
         if (!studentName) {
           nameError.textContent = 'Student name is required'
@@ -536,7 +555,20 @@
           standardError.textContent = 'Please select a standard'
           isValid = false
         }
-    
+        if (!usernameValue) {
+          usernameError.textContent = 'Username is required'
+          isValid = false
+        } else if (!/^[a-zA-Z][a-zA-Z0-9_]{3,19}$/.test(usernameValue)) {
+          usernameError.textContent = 'Username must start with a letter and contain 4-20 characters'
+          isValid = false
+        }
+        if (!passwordValue) {
+          passwordError.textContent = 'Password is required'
+          isValid = false
+        } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/.test(passwordValue)) {
+          passwordError.textContent = 'Password must contain uppercase, lowercase, number and special character'
+          isValid = false
+        }
         if (!isValid) {
           e.preventDefault()
         }
