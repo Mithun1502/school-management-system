@@ -69,6 +69,10 @@ def user_login(request):
 
         # Dummy Student Login
         elif username == "student" and password == "student123":
+
+            request.session["student_logged_in"] = True
+            request.session["student_name"] = "Student"
+
             messages.success(request, "Student Login Successful")
             return redirect("student_dashboard")
 
@@ -89,6 +93,11 @@ def teacher_dashboard(request):
 
 
 def student_dashboard(request):
+
+    if not request.session.get("student_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("user_login")
+
     return render(request, "student_dashboard.html")
 
 
@@ -99,7 +108,11 @@ def teacher_logout(request):
 
 
 def student_logout(request):
-    logout(request)
+
+    request.session.flush()
+
+    messages.success(request, "Logged out successfully")
+
     return redirect("user_login")
 
 
@@ -146,53 +159,122 @@ def add_teacher(request):
             ]
         ):
             messages.error(request, "All fields are required")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^[A-Za-z ]{3,25}$", name):
             messages.error(
                 request,
                 "Name must contain only letters and spaces (3-25 characters)",
             )
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not Standard.objects.filter(standard_name=standard).exists():
             messages.error(request, "Selected standard does not exist")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if Teacher.objects.filter(standard=standard).exists():
             messages.error(request, f"{standard} already has a teacher assigned")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if len(address) < 10 or len(address) > 200:
             messages.error(request, "Address must be between 10 and 200 characters")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^[6789]\d{9}$", phone):
             messages.error(
                 request,
                 "Phone number must be 10 digits and start with 6, 7, 8 or 9",
             )
-            return redirect("add_teacher")
-
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
         if Teacher.objects.filter(bank_account_number=bank_account_number).exists():
             messages.error(request, "Bank account number already exists")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^[a-zA-Z0-9_.]+@gmail\.com$", email):
             messages.error(request, "Only Gmail addresses are allowed")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]{3,19}$", username):
             messages.error(
                 request,
                 "Username must start with a letter and contain 4-20 characters",
             )
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
         reserved_usernames = ["admin", "school_admin", "root", "teacher", "student"]
 
         if username.lower() in reserved_usernames:
             messages.error(request, "This username is not allowed")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
         if not re.match(
             r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$",
             password,
@@ -201,49 +283,124 @@ def add_teacher(request):
                 request,
                 "Password must contain uppercase, lowercase, number and special character",
             )
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if password != confirm_password:
             messages.error(request, "Passwords do not match")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if Teacher.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
-            return redirect("add_teacher")
-
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
         if Teacher.objects.filter(email=email).exists():
             messages.error(request, "Email already exists")
-            return redirect("add_teacher")
-
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
         if Teacher.objects.filter(phone=phone).exists():
             messages.error(request, "Phone number already exists")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if len(email) > 100:
             messages.error(request, "Email is too long")
-            return redirect("add_teacher")
-        if not re.match(r"^[A-Za-z ]{3,50}$", bank_branch):
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
+        if not re.match(r"^[A-Za-z .,-]{3,50}$", bank_branch):
             messages.error(
                 request,
-                "Bank branch must contain only letters and spaces (3-50 characters)",
+                "Bank branch must contain only letters, spaces, dot (.), comma (,) and hyphen (-) (3-50 characters)",
             )
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^\d{9,18}$", bank_account_number):
             messages.error(request, "Bank account number must be 9-18 digits")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^[A-Z]{4}0[A-Z0-9]{6}$", ifsc_code):
             messages.error(request, "Enter a valid IFSC code")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if "  " in name:
             messages.error(request, "Multiple spaces are not allowed in name")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if "  " in bank_branch:
             messages.error(request, "Multiple spaces are not allowed in branch name")
-            return redirect("add_teacher")
+            return render(
+                request,
+                "add_teacher.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         Teacher.objects.create(
             name=name,
@@ -399,36 +556,121 @@ def add_student(request):
 
         if not all([name, standard, phone, email]):
             messages.error(request, "All fields are required")
-            return redirect("add_student")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^[A-Za-z ]{3,25}$", name):
             messages.error(
                 request,
                 "Student name must contain only letters and spaces (3-25 characters)",
             )
-            return redirect("add_student")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
+
+        if "  " in name:
+            messages.error(
+                request,
+                "Multiple spaces are not allowed in student name",
+            )
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
+
+        if " " in email:
+            messages.error(request, "Email cannot contain spaces")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
+
+        if Student.objects.filter(name__iexact=name, standard=standard).exists():
+            messages.error(request, f"Student '{name}' already exists in {standard}")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if Student.objects.filter(email=email).exists():
             messages.error(request, "Email already exists")
-            return redirect("add_student")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if Student.objects.filter(phone=phone).exists():
             messages.error(request, "Phone Number already exists")
-            return redirect("add_student")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^[6789]\d{9}$", phone):
             messages.error(request, "Enter valid phone number")
-            return redirect("add_student")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         if not re.match(r"^[a-zA-Z0-9_.]+@gmail\.com$", email):
             messages.error(request, "Only Gmail addresses allowed")
-            return redirect("add_student")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         teacher = Teacher.objects.filter(standard=standard).first()
 
         if not teacher:
             messages.error(request, f"No teacher assigned for {standard}")
-            return redirect("add_student")
+            return render(
+                request,
+                "add_student.html",
+                {
+                    "standards": standards,
+                    "form_data": request.POST,
+                },
+            )
 
         Student.objects.create(
             name=name,
@@ -481,32 +723,76 @@ def teacher_add_student(request):
         phone = request.POST.get("phone", "").strip()
         email = request.POST.get("email", "").strip().lower()
 
+        context = {
+            "teacher": teacher,
+            "roll_number": generate_roll_number(teacher.standard),
+            "name": name,
+            "phone": phone,
+            "email": email,
+        }
         if not all([name, phone, email]):
             messages.error(request, "All fields are required")
-            return redirect("teacher_add_student")
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
 
         if not re.match(r"^[a-zA-Z0-9_.]+@gmail\.com$", email):
             messages.error(request, "Only Gmail addresses allowed")
-            return redirect("teacher_add_student")
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
 
         if not re.match(r"^[A-Za-z ]{3,25}$", name):
             messages.error(
                 request,
                 "Student name must contain only letters and spaces (3-25 characters)",
             )
-            return redirect("teacher_add_student")
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
 
         if Student.objects.filter(email=email).exists():
             messages.error(request, "Email already exists")
-            return redirect("teacher_add_student")
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
 
         if Student.objects.filter(phone=phone).exists():
             messages.error(request, "Phone Number already exists")
-            return redirect("teacher_add_student")
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
 
         if not re.match(r"^[6789]\d{9}$", phone):
             messages.error(request, "Enter valid phone number")
-            return redirect("teacher_add_student")
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
+
+        if Student.objects.filter(
+            name__iexact=name, standard=teacher.standard
+        ).exists():
+            messages.error(
+                request, f"Student '{name}' already exists in {teacher.standard}"
+            )
+            return render(
+                request,
+                "teacher_add_student.html",
+                context,
+            )
+
         Student.objects.create(
             name=name,
             standard=teacher.standard,
@@ -528,11 +814,15 @@ def teacher_add_student(request):
 
 
 def generate_roll_number(standard):
-    standard_number = standard.split()[-1]
+    standard_no = standard.split()[-1]
 
-    count = Student.objects.filter(standard=standard).count() + 1
+    last_student = Student.objects.filter(standard=standard).order_by("-id").first()
 
-    return f"{standard_number}{count:03d}"
+    if last_student:
+        last_roll = int(last_student.roll_number)
+        return str(last_roll + 1)
+
+    return f"{standard_no}001"
 
 
 def view_students(request):
@@ -895,27 +1185,21 @@ def edit_teacher(request, id):
             return redirect("edit_teacher", id=id)
 
         if " " in email:
-            messages.error(
-                request,
-                "Email cannot contain spaces"
-            )
+            messages.error(request, "Email cannot contain spaces")
             return redirect("edit_teacher", id=id)
 
         if " " in username:
-            messages.error(
-                request,
-                "Username cannot contain spaces"
-            )
+            messages.error(request, "Username cannot contain spaces")
             return redirect("edit_teacher", id=id)
 
         if len(email) > 100:
             messages.error(request, "Email is too long")
             return redirect("edit_teacher", id=id)
 
-        if not re.match(r"^[A-Za-z ]{3,50}$", bank_branch):
+        if not re.match(r"^[A-Za-z .,-]{3,50}$", bank_branch):
             messages.error(
                 request,
-                "Bank branch must contain only letters and spaces (3-50 characters)",
+                "Bank branch must contain only letters, spaces, dot (.), comma (,) and hyphen (-) (3-50 characters)",
             )
             return redirect("edit_teacher", id=id)
 
@@ -994,3 +1278,41 @@ def delete_teacher(request, id):
     messages.success(request, "Teacher Deleted Successfully")
 
     return redirect("view_teachers")
+
+
+def student_profile(request):
+
+    if not request.session.get("student_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("user_login")
+
+    student = {
+        "name": request.session.get("student_name", "Student"),
+        "roll_number": "1001",
+        "standard": "STANDARD 10",
+        "phone": "9876543210",
+        "email": "student@gmail.com",
+        "teacher_name": "Teacher",
+    }
+
+    return render(
+        request,
+        "student_profile.html",
+        {"student": student},
+    )
+
+
+def student_marks(request):
+    return render(request, "student_marks.html")
+
+
+def student_attendance(request):
+    return render(request, "student_attendance.html")
+
+
+def student_id(request):
+    return render(request, "student_id.html")
+
+
+def student_events(request):
+    return render(request, "student_events.html")

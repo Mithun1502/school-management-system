@@ -62,4 +62,14 @@ urlpatterns = [
     path("view-teachers/", views.view_teachers, name="view_teachers"),
     path("edit-teacher/<int:id>/", views.edit_teacher, name="edit_teacher"),
     path("delete-teacher/<int:id>/", views.delete_teacher, name="delete_teacher"),
+    path(
+        "student-profile/",
+        views.student_profile,
+        name="student_profile",
+    ),
+    path("student-marks/", views.student_marks, name="student_marks"),
+    path("student-attendance/", views.student_attendance, name="student_attendance"),
+    path("student-events/", views.student_events, name="student_events"),
+    path("student-id/", views.student_id, name="student_id"),
+
 ]

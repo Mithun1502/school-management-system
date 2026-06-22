@@ -226,9 +226,11 @@
     <h1 class="top-heading mb-4">Add Student</h1>
     <div class="form-card">
       <h2 class="text-center add-student mb-4"><i class="fas fa-user-plus"></i>Add Student</h2>
-
- 
-
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
       <form method="POST" id="addStudentForm">
         {% csrf_token %}
 
@@ -244,7 +246,7 @@
 
           <div class="col-md-6 mb-3">
             <label>Student Name</label>
-            <input type="text" id="name" name="name" class="form-control" placeholder="Enter student full name" required />
+            <input type="text" id="name" name="name" class="form-control" placeholder="Enter student full name" value="{{ name|default:'' }}" required />
             <small class="text-danger" id="nameError"></small>
           </div>
 
@@ -255,13 +257,13 @@
 
           <div class="col-md-6 mb-3">
             <label>Phone Number</label>
-            <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter 10-digit phone number" maxlength="10" required />
+            <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter 10-digit phone number" value="{{ phone|default:'' }}" maxlength="10" required />
             <small class="text-danger" id="phoneError"></small>
           </div>
 
           <div class="col-md-6 mb-3">
             <label>Email</label>
-            <input type="email" id="email" name="email" class="form-control" placeholder="Enter Gmail address" required />
+            <input type="email" id="email" name="email" class="form-control" placeholder="Enter Gmail address" value="{{ email|default:'' }}" required />
             <small class="text-danger" id="emailError"></small>
           </div>
         </div>
@@ -324,11 +326,16 @@
       }
     })
   </script>
-   <script>
-      setTimeout(() => {
-        document.querySelectorAll('.alert-danger').forEach((alert) => {
-          bootstrap.Alert.getOrCreateInstance(alert).close()
-        })
-      }, 3000)
-    </script>
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.alert').forEach((alert) => {
+        alert.style.transition = 'opacity 0.5s ease'
+        alert.style.opacity = '0'
+    
+        setTimeout(() => {
+          alert.remove()
+        }, 500)
+      })
+    }, 3000)
+  </script>
 {% endblock %}

@@ -258,6 +258,55 @@
         padding-right: 2px;
       }
     }
+    small.text-danger {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    
+    @media (max-width: 320px) {
+      small.text-danger {
+        font-size: 11px;
+        margin-top: 3px;
+        line-height: 1.2;
+      }
+    }
+    
+    @media (max-width: 240px) {
+      small.text-danger {
+        font-size: 10px;
+        margin-top: 2px;
+        line-height: 1.1;
+      }
+    }
+    
+    @media (max-width: 200px) {
+      small.text-danger {
+        font-size: 8px;
+        margin-top: 2px;
+        line-height: 1.1;
+        word-break: break-all;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      small.text-danger {
+        font-size: 7px;
+        margin-top: 1px;
+        line-height: 1;
+        word-break: break-all;
+      }
+    }
+    small.text-danger {
+      min-height: 18px;
+    }
+    @media (max-width: 200px) {
+      small.text-danger {
+        min-height: 24px;
+      }
+    }
   </style>
   {% comment %} <div class="main-content">
     <h3>Student Section Loading....</h3>
@@ -269,17 +318,19 @@
           <i class="bi bi-mortarboard-fill"></i>
           Add Student
         </h2>
+        {% comment %} <div id="jsError" class="alert alert-danger d-none"></div> {% endcomment %}
         {% if messages %}
           {% for message in messages %}
             <div class="alert alert-warning">{{ message }}</div>
           {% endfor %}
         {% endif %}
-        <form method="POST">
+        <form method="POST" id="studentForm">
           {% csrf_token %}
           <div class="row">
             <div class="col-md-6 mb-3">
               <label>Student Name</label>
-              <input type="text" name="name" class="form-control" placeholder="Enter Student Name" required />
+              <input type="text" name="name" value="{{ form_data.name|default:'' }}" class="form-control" placeholder="Enter Student Name" autocomplete="off" required />
+              <small id="nameError" class="text-danger"></small>
             </div>
             <div class="col-md-6 mb-3">
               <label>Standard</label>
@@ -289,6 +340,7 @@
                   <option value="{{ standard.standard_name }}">{{ standard.standard_name }}</option>
                 {% endfor %}
               </select>
+              <small id="standardError" class="text-danger"></small>
             </div>
             <div class="col-md-6 mb-3">
               <label>Class Teacher</label>
@@ -300,11 +352,13 @@
             </div>
             <div class="col-md-6 mb-3 col-lg-12 col-12">
               <label>Phone Number</label>
-              <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" required />
+              <input type="text" name="phone" value="{{ form_data.phone|default:'' }}" class="form-control" placeholder="Enter Phone Number" maxlength="10" autocomplete="off" required />
+              <small id="phoneError" class="text-danger"></small>
             </div>
             <div class="col-md-12 mb-4">
               <label>Email</label>
-              <input type="email" name="email" class="form-control" placeholder="Enter Email Address" required />
+              <input type="email" value="{{ form_data.email|default:'' }}" name="email" class="form-control" placeholder="Enter Email Address" autocomplete="off" required />
+              <small id="emailError" class="text-danger"></small>
             </div>
           </div>
           <button type="submit" class="btn-save">
@@ -366,6 +420,134 @@
             rollInput.value = data.roll_number
           })
       })
+    
+      if (standardSelect.value) {
+        standardSelect.dispatchEvent(new Event('change'))
+      }
     })
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('studentForm')
+      const name = document.querySelector('input[name="name"]')
+      const phone = document.querySelector('input[name="phone"]')
+      const email = document.querySelector('input[name="email"]')
+      const standard = document.querySelector('select[name="standard"]')
+    
+      const nameError = document.getElementById('nameError')
+      const phoneError = document.getElementById('phoneError')
+      const emailError = document.getElementById('emailError')
+      const standardError = document.getElementById('standardError')
+    
+      function clearErrors() {
+        nameError.textContent = ''
+        phoneError.textContent = ''
+        emailError.textContent = ''
+        standardError.textContent = ''
+      }
+    
+      name.addEventListener('input', () => {
+        const value = name.value.trim()
+    
+        nameError.textContent = ''
+    
+        if (!/^[A-Za-z ]*$/.test(value)) {
+          nameError.textContent = 'Student name can contain only letters and spaces'
+        } else if (value.length > 25) {
+          nameError.textContent = 'Student name cannot exceed 25 characters'
+        } else if (value.includes('  ')) {
+          nameError.textContent = 'Multiple spaces are not allowed in student name'
+        }
+      })
+    
+      phone.addEventListener('input', () => {
+        phone.value = phone.value.replace(/\D/g, '')
+    
+        phoneError.textContent = ''
+    
+        if (phone.value.length > 0 && !/^[6789]/.test(phone.value)) {
+          phoneError.textContent = 'Phone number must start with 6, 7, 8 or 9'
+        } else if (phone.value.length > 10) {
+          phoneError.textContent = 'Phone number must be exactly 10 digits'
+        }
+      })
+    
+      email.addEventListener('input', () => {
+        const value = email.value.trim()
+    
+        emailError.textContent = ''
+    
+        if (value.includes(' ')) {
+          emailError.textContent = 'Email cannot contain spaces'
+        } else if (value && !/^[a-zA-Z0-9_.]+@gmail\.com$/.test(value)) {
+          emailError.textContent = 'Only Gmail addresses allowed'
+        }
+      })
+    
+      standard.addEventListener('change', () => {
+        standardError.textContent = ''
+    
+        if (!standard.value) {
+          standardError.textContent = 'Please select a standard'
+        }
+      })
+    
+      form.addEventListener('submit', (e) => {
+        clearErrors()
+    
+        let isValid = true
+    
+        const studentName = name.value.trim()
+        const phoneNumber = phone.value.trim()
+        const emailValue = email.value.trim()
+        const standardValue = standard.value.trim()
+    
+        if (!studentName) {
+          nameError.textContent = 'Student name is required'
+          isValid = false
+        } else if (!/^[A-Za-z ]{3,25}$/.test(studentName)) {
+          nameError.textContent = 'Student name must contain only letters and spaces (3-25 characters)'
+          isValid = false
+        } else if (studentName.includes('  ')) {
+          nameError.textContent = 'Multiple spaces are not allowed in student name'
+          isValid = false
+        }
+    
+        if (!phoneNumber) {
+          phoneError.textContent = 'Phone number is required'
+          isValid = false
+        } else if (!/^[6789]\d{9}$/.test(phoneNumber)) {
+          phoneError.textContent = 'Enter valid phone number'
+          isValid = false
+        }
+    
+        if (!emailValue) {
+          emailError.textContent = 'Email is required'
+          isValid = false
+        } else if (emailValue.includes(' ')) {
+          emailError.textContent = 'Email cannot contain spaces'
+          isValid = false
+        } else if (!/^[a-zA-Z0-9_.]+@gmail\.com$/.test(emailValue)) {
+          emailError.textContent = 'Only Gmail addresses allowed'
+          isValid = false
+        }
+    
+        if (!standardValue) {
+          standardError.textContent = 'Please select a standard'
+          isValid = false
+        }
+    
+        if (!isValid) {
+          e.preventDefault()
+        }
+      })
+    })
+  </script>
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.alert').forEach((alert) => {
+        bootstrap.Alert.getOrCreateInstance(alert).close()
+      })
+    }, 3000)
   </script>
 {% endblock %}

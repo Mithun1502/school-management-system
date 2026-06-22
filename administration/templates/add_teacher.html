@@ -347,19 +347,19 @@
           <div class="row">
             <div class="col-md-6 col-sm-12 mb-3">
               <label>Name</label>
-              <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" required maxlength="25" />
+              <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" required maxlength="25" value="{{ form_data.name }}" />
               <small class="error-text" id="nameError"></small>
             </div>
 
             <div class="col-md-6 mb-3">
               <label>Phone Number</label>
-              <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter your 10-digit phone number" maxlength="10" required />
+              <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter your 10-digit phone number" value="{{ form_data.phone }}" maxlength="10" required />
               <small class="error-text" id="phoneError"></small>
             </div>
 
             <div class="col-md-6 mb-3">
               <label>Email</label>
-              <input type="text" id="email" name="email" class="form-control" placeholder="Enter your email address" required />
+              <input type="text" id="email" name="email" class="form-control" placeholder="Enter your email address" value="{{ form_data.email }}" required />
               <small class="error-text" id="emailError"></small>
             </div>
 
@@ -377,7 +377,7 @@
 
             <div class="col-md-6 mb-3">
               <label>Username</label>
-              <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required maxlength="20" />
+              <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required maxlength="20" value="{{ form_data.username }}" />
               <small class="error-text" id="usernameError"></small>
             </div>
 
@@ -401,25 +401,25 @@
           </div>
           <div class="col-md-12 mb-3 col-lg-12">
             <label>Address</label>
-            <textarea style="resize: none;" id="address" name="address" class="form-control" rows="3" placeholder="Enter teacher address" required></textarea>
+            <textarea id="address" style="resize: none;" name="address" class="form-control" rows="4" placeholder="Enter teacher address" required>{{ form_data.address }}</textarea>
             <small class="error-text" id="addressError"></small>
           </div>
 
           <div class="col-md-12 mb-3 col-lg-12">
             <label>Bank Account Number</label>
-            <input type="text" id="bank_account_number" name="bank_account_number" class="form-control" placeholder="Enter account number" maxlength="18" required />
+            <input type="text" id="bank_account_number" name="bank_account_number" class="form-control" placeholder="Enter account number" maxlength="18" value="{{ form_data.bank_account_number }}" required />
             <small class="error-text" id="accountError"></small>
           </div>
 
           <div class="col-md-12 mb-3 col-lg-12">
             <label>Bank Branch</label>
-            <input type="text" id="bank_branch" name="bank_branch" class="form-control" placeholder="Enter branch name" maxlength="50" required />
+            <input type="text" id="bank_branch" name="bank_branch" class="form-control" placeholder="Enter branch name" value="{{ form_data.bank_branch }}" maxlength="50" required />
             <small class="error-text" id="branchError"></small>
           </div>
 
           <div class="col-md-12 mb-4 col-lg-12">
             <label>IFSC Code</label>
-            <input type="text" id="ifsc_code" name="ifsc_code" class="form-control" placeholder="Enter IFSC Code" maxlength="11" required />
+            <input type="text" id="ifsc_code" name="ifsc_code" class="form-control" placeholder="Enter IFSC Code" value="{{ form_data.ifsc_code }}" maxlength="11" required />
             <small class="error-text" id="ifscError"></small>
           </div>
           <button type="submit" class="btn-save"><i class="bi bi-check-circle-fill"></i> Add Teacher</button>
@@ -459,7 +459,7 @@
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/
     const addressRegex = /^.{10,200}$/
     const accountRegex = /^\d{9,18}$/
-    const branchRegex = /^[A-Za-z0-9 .,-]{3,50}$/
+    const branchRegex = /^[A-Za-z .,-]{3,50}$/
     const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/
     
     function setError(input, errorId, message) {
@@ -570,7 +570,7 @@
       const value = branchInput.value.trim()
     
       if (!branchRegex.test(value)) {
-        setError(branchInput, 'branchError', 'Enter valid branch name')
+        setError(branchInput, 'branchError', 'Bank branch must contain only letters, spaces, dot (.), comma (,) and hyphen (-) (3-50 characters)')
         return false
       }
     
@@ -582,7 +582,7 @@
       const value = ifscInput.value.trim().toUpperCase()
     
       if (!ifscRegex.test(value)) {
-        setError(ifscInput, 'ifscError', 'Invalid IFSC Code')
+        setError(ifscInput, 'ifscError', 'Invalid Code Eg: MITH015ASHW')
         return false
       }
     
@@ -626,5 +626,18 @@
         }
       })
     })
+  </script>
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.alert').forEach((alert) => {
+        alert.style.transition = 'all 0.5s ease'
+        alert.style.opacity = '0'
+        alert.style.transform = 'translateY(-10px)'
+    
+        setTimeout(() => {
+          alert.remove()
+        }, 500)
+      })
+    }, 3000)
   </script>
 {% endblock %}

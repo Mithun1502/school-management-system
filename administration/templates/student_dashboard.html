@@ -1,1 +1,525 @@
-<h4>mithun</h4>
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      html {
+        font-size: 16px;
+      }
+      
+      body {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #0f172a, #1e293b, #09296c);
+        font-family: 'Segoe UI', sans-serif;
+        overflow-x: hidden;
+      }
+      
+      .dashboard-wrapper {
+        display: flex;
+        min-height: 100vh;
+      }
+      
+      .sidebar {
+        width: 260px;
+        min-height: 100vh;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-right: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 20px;
+        flex-shrink: 0;
+        transition: 0.3s;
+      }
+      
+      .logo-box {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #fff;
+      }
+      
+      .logo-box h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+      }
+      
+      .nav-link {
+        color: #fff !important;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1rem;
+        transition: 0.3s;
+      }
+      
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateX(4px);
+      }
+      
+      .logout-link {
+        background: rgba(220, 53, 69, 0.18);
+      }
+      
+      .content {
+        flex: 1;
+        padding: 25px;
+        min-width: 0;
+      }
+      
+      .welcome-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 25px;
+        color: #fff;
+        margin-bottom: 25px;
+      }
+      
+      .welcome-card h2 {
+        font-size: 2.3rem;
+        margin-bottom: 10px;
+      }
+      
+      .welcome-card p {
+        font-size: 1.05rem;
+        margin: 0;
+      }
+      
+      .glass-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        color: #fff;
+        padding: 25px;
+        text-align: center;
+        height: 100%;
+        min-height: 210px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: 0.3s;
+      }
+      
+      .glass-card:hover {
+        transform: translateY(-4px);
+      }
+      
+      .glass-card i {
+        font-size: 2rem;
+        margin-bottom: 15px;
+      }
+      
+      .glass-card h5 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+      
+      .glass-card p {
+        margin: 0;
+      }
+      
+      .mobile-navbar {
+        display: none;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px);
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 20px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      
+      .mobile-navbar h5 {
+        color: #fff;
+        margin: 0;
+      }
+      
+      .sidebar-overlay {
+        display: none;
+      }
+      
+      @media (max-width: 1200px) {
+        .welcome-card h2 {
+          font-size: 2rem;
+        }
+      }
+      
+      @media (max-width: 992px) {
+        .sidebar {
+          width: 230px;
+        }
+      
+        .welcome-card h2 {
+          font-size: 1.8rem;
+        }
+      
+        .glass-card {
+          min-height: 190px;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: -260px;
+          width: 260px;
+          z-index: 1050;
+        }
+      
+        .sidebar.active {
+          left: 0;
+        }
+      
+        .sidebar-overlay.active {
+          display: block;
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.45);
+          z-index: 1040;
+        }
+      
+        .mobile-navbar {
+          display: flex;
+        }
+      
+        .content {
+          width: 100%;
+          padding: 15px;
+        }
+      
+        .welcome-card {
+          padding: 20px;
+        }
+      
+        .welcome-card h2 {
+          font-size: 1.6rem;
+        }
+      
+        .glass-card {
+          min-height: 180px;
+        }
+      }
+      
+      @media (max-width: 576px) {
+        .content {
+          padding: 12px;
+        }
+      
+        .welcome-card {
+          padding: 16px;
+        }
+      
+        .welcome-card h2 {
+          font-size: 1.35rem;
+        }
+      
+        .welcome-card p {
+          font-size: 0.9rem;
+        }
+      
+        .glass-card {
+          min-height: 160px;
+          padding: 18px;
+        }
+      
+        .glass-card h5 {
+          font-size: 1.15rem;
+        }
+      
+        .glass-card i {
+          font-size: 1.6rem;
+        }
+      }
+      
+      @media (max-width: 350px) {
+        .sidebar {
+          width: 100%;
+          left: -100%;
+        }
+      
+        .logo-box h3 {
+          font-size: 1.3rem;
+        }
+      
+        .nav-link {
+          font-size: 0.85rem;
+          padding: 10px;
+        }
+      }
+      
+      @media (max-width: 200px) {
+        .content {
+          padding: 6px;
+        }
+      
+        .sidebar {
+          padding: 8px;
+        }
+      
+        .logo-box h3 {
+          font-size: 0.8rem;
+        }
+      
+        .nav-link {
+          font-size: 0.6rem;
+          padding: 5px;
+          gap: 4px;
+        }
+      
+        .welcome-card {
+          padding: 8px;
+        }
+      
+        .welcome-card h2 {
+          font-size: 0.75rem;
+        }
+      
+        .welcome-card p {
+          font-size: 0.55rem;
+        }
+      
+        .glass-card {
+          min-height: auto;
+          padding: 8px;
+        }
+      
+        .glass-card h5 {
+          font-size: 0.65rem;
+        }
+      
+        .glass-card p {
+          font-size: 0.5rem;
+        }
+      
+        .glass-card i {
+          font-size: 0.8rem;
+        }
+      }
+      
+      @media (max-width: 170px) {
+        .nav-link i {
+          display: none;
+        }
+      
+        .logo-box h3 {
+          font-size: 0.65rem;
+        }
+      
+        .nav-link {
+          font-size: 0.5rem;
+          padding: 4px;
+        }
+      
+        .welcome-card h2 {
+          font-size: 0.65rem;
+        }
+      
+        .welcome-card p {
+          font-size: 0.45rem;
+        }
+      
+        .glass-card h5 {
+          font-size: 0.55rem;
+        }
+      
+        .glass-card p {
+          font-size: 0.45rem;
+        }
+      
+        .glass-card i {
+          display: none;
+        }
+      }
+      .glass-card-link {
+        text-decoration: none;
+        color: yellow;
+        transition: 0.2s ease;
+      }
+      .glass-card-link:hover {
+        color: #b39501 !important;
+      }
+      .menu-btn {
+        border: none;
+        background: rgba(0, 0, 0, 0.45);
+        border-radius: 15px;
+      }
+      .fa-bars {
+        background-color: #03102b;
+        padding: 8px;
+        border-radius: 15px;
+        color: white;
+        font-size: 25px !important;
+      }
+      i .fa-solid .fa-bars {
+        border: none !important;
+      }
+      @media (max-width: 275px) and (min-width: 201px) {
+        .fa-bars {
+          padding: 6px 8px;
+          border-radius: 8px;
+          font-size: 20px;
+        }
+        .mobile-navbar h5 {
+          font-size: 13px !important;
+        }
+      }
+      .mobile-navbar h5 {
+        word-break: keep-all !important;
+      }
+      @media (max-width: 206px) {
+        .mobile-navbar h5 {
+          font-size: 12px !important;
+        }
+      }
+      @media (max-width: 300px) and (min-width: 170px) {
+        .menu-btn{
+          border-radius: 0px;
+          padding:0px;
+          margin: 0px;
+        }
+        .fa-bars {
+          background-color: #03102b;
+          padding: 6px 6px;
+          border-radius: 4px;
+          color: white;
+          font-size: 12px !important;
+        }
+        i .fa-solid .fa-bars {
+          border: none !important;
+        }
+        .mobile-navbar h5 {
+          font-size: 10px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-wrapper">
+      <!-- Sidebar -->
+
+      <div class="sidebar" id="sidebar">
+        <div class="logo-box">
+          <h3>Student Panel</h3>
+        </div>
+
+        <ul class="nav flex-column">
+          <li>
+            <a class="nav-link" href="{% url 'student_dashboard' %}">Dashboard</a>
+          </li>
+          <li>
+            <a href="{% url 'student_profile' %}" class="nav-link">Profile</a>
+          </li>
+
+          <li>
+            <a href="{% url 'student_marks' %}" class="nav-link">Marks</a>
+          </li>
+
+          <li>
+            <a href="{% url 'student_attendance' %}" class="nav-link">Attendance</a>
+          </li>
+
+          <li>
+            <a href="{% url 'student_events' %}" class="nav-link">Upcoming Events</a>
+          </li>
+
+          <li>
+            <a href="{% url 'student_id' %}" class="nav-link">Download ID Card</a>
+          </li>
+
+          <li>
+            <a href="{% url 'student_logout' %}" class="nav-link logout-link">Logout</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="content">
+        <div class="mobile-navbar">
+          <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+
+          <h5>Student Dashboard</h5>
+        </div>
+        {% block content %}
+          <div class="welcome-card">
+            <h2>Welcome Student</h2>
+            <p>Manage your profile, marks, attendance, events and ID card from one place.</p>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+              <div class="glass-card">
+                <a href="{% url 'student_profile' %}" class="glass-card-link"><h5>My Profile</h5></a>
+                <p>View Student Details</p>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+              <div class="glass-card">
+                <a href="{% url 'student_marks' %}" class="glass-card-link"><h5>Marks</h5></a>
+                <p>Check Academic Results</p>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+              <div class="glass-card">
+                <a href="{% url 'student_attendance' %}" class="glass-card-link"><h5>Attendance</h5></a>
+                <p>Track Attendance</p>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+              <div class="glass-card">
+                <a href="{% url 'student_events' %}" class="glass-card-link"><h5>Events</h5></a>
+                <p>Upcoming Activities</p>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+              <div class="glass-card">
+                <a href="{% url 'student_id' %}" class="glass-card-link"><h5>ID Card</h5></a>
+                <p>Download Student ID</p>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+              <div class="glass-card">
+                <a href="{% url 'student_dashboard' %}" class="glass-card-link"><h5>Student Portal</h5></a>
+                <p>School Management System</p>
+              </div>
+            </div>
+          </div>
+
+          <br />
+        {% endblock %}
+      </div>
+    </div>
+
+    <script>
+      function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active')
+      }
+    </script>
+  </body>
+</html>
