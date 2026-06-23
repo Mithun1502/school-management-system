@@ -66,7 +66,8 @@
       
         width: 100%;
         min-height: 180px;
-        max-width: 360px !important;
+        width: 100% !important;
+        min-height: 180px !important;
         text-decoration: none;
         border: none;
         border-radius: 20px;
@@ -274,6 +275,13 @@
             <a class="nav-link" href="{% url 'view_teachers' %}">View Teachers</a>
           </li>
           <li class="nav-item">
+            <a href="{% url 'add_event' %}" class="nav-link">Add Event</a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{% url 'view_events' %}" class="nav-link">View Events</a>
+          </li>
+          <li class="nav-item">
             <a href="{% url 'view_standards' %}" class="nav-link">View Standards</a>
           </li>
           <li class="nav-item">
@@ -310,6 +318,13 @@
           <a class="nav-link" href="{% url 'view_teachers' %}">View Teachers</a>
         </li>
         <li class="nav-item">
+          <a href="{% url 'add_event' %}" class="nav-link">Add Event</a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'view_events' %}" class="nav-link">View Events</a>
+        </li>
+        <li class="nav-item">
           <a href="{% url 'view_standards' %}" class="nav-link">View Standards</a>
         </li>
         <li class="nav-item">
@@ -344,7 +359,7 @@
           </div>
         </div>
         <div class="row g-4 mt-2 justify-content-center">
-          <div class="col-md-4 mb-4">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <a href="{% url 'add_standard' %}" class="action-btn">
               <i class="bi bi-building fs-1 mb-3"></i>
               <h5>Add Standard</h5>
@@ -352,7 +367,7 @@
             </a>
           </div>
 
-          <div class="col-md-4 mb-4">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <a href="{% url 'add_teacher' %}" class="action-btn">
               <i class="bi bi-person-workspace fs-1 mb-3"></i>
               <h5>Add Teacher</h5>
@@ -360,33 +375,47 @@
             </a>
           </div>
 
-          <div class="col-md-4 mb-4">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <a href="{% url 'add_student' %}" class="action-btn">
               <i class="bi bi-mortarboard fs-1 mb-3"></i>
               <h5>Add Student</h5>
               <p class="mb-0">Register a new student</p>
             </a>
           </div>
-          <div class="col-md-4 mb-4">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <a href="{% url 'view_standards' %}" class="action-btn">
               <i class="bi bi-clipboard2-heart fs-1 mb-3 text-center"></i>
               <h5>View Standards</h5>
               <p>Details about Standards</p>
             </a>
           </div>
-
-          <div class="col-md-4 mb-4">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <a href="{% url 'view_teachers' %}" class="action-btn">
               <i class="bi bi-person-video3 fs-1 mb-3"></i>
               <h5>View Teachers</h5>
               <p>CRUD Operations for Teachers</p>
             </a>
           </div>
-          <div class="col-md-4 mb-4">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <a href="{% url 'view_students' %}" class="action-btn">
               <i class="bi bi-journals fs-1 mb-3 text-center"></i>
               <h5>View Students</h5>
               <p>CRUD Operations for Students</p>
+            </a>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <a href="{% url 'add_event' %}" class="action-btn">
+              <i class="bi bi-calendar-event fs-1 mb-3"></i>
+              <h5>Add Event</h5>
+              <p>Create Upcoming Events</p>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="{% url 'view_events' %}" class="action-btn">
+              <i class="bi bi-calendar-check fs-1 mb-3"></i>
+              <h5>View Events</h5>
+              <p>Manage School Events</p>
             </a>
           </div>
         </div>

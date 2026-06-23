@@ -1,0 +1,230 @@
+{% extends 'student_dashboard.html' %}
+
+{% block content %}
+  <div class="main-content">
+    <div class="container-fluid">
+      <h2 class="text-center text-white mb-4">
+        <i class="bi bi-calendar-event"></i>
+        View Events
+      </h2>
+
+      <div class="row g-4">
+        {% for event in events %}
+          <div class="col-xl-4 col-lg-6 col-md-6">
+            <div class="event-card">
+              {% if event.event_image %}
+                <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="event-image" />
+              {% else %}
+                <div class="event-image-placeholder">No Image Available</div>
+              {% endif %}
+
+              <div class="event-body">
+                <h4 class="event-title">{{ event.title }}</h4>
+
+                <p class="event-description">{{ event.description }}</p>
+
+                <p class="event-date">
+                  <i class="bi bi-calendar3"></i>
+                  {{ event.event_date }}
+                </p>
+
+                <div class="btn-group-custom">
+                  <a href="{% url 'student_event_detail' event.id %}" class="btn btn-info">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12">
+            <div class="alert alert-info text-center">No Events Found</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .view-btn {
+      background: #111827;
+      color: white;
+      border: none;
+    }
+    
+    .view-btn:hover {
+      background: #000;
+      color: white;
+    }
+    .event-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      overflow: hidden;
+      height: 100%;
+    
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .event-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    
+    .event-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+    
+    .event-image-placeholder {
+      height: 220px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #111827;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .event-title {
+      color: white;
+      font-weight: 700;
+    
+      min-height: 90px;
+    
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    
+      overflow: hidden;
+    }
+    
+    .event-description {
+      color: #d1d5db;
+      word-break: break-word;
+    
+      min-height: 72px;
+    
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .event-date {
+      color: #60a5fa;
+      font-weight: 600;
+      min-height: 30px;
+    }
+    
+    .btn-group-custom {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+    
+    .btn-group-custom .btn {
+      flex: 1;
+      min-width: 90px;
+    }
+    
+    @media (max-width: 300px) {
+      .main-content {
+        padding: 10px !important;
+      }
+    
+      .event-image,
+      .event-image-placeholder {
+        height: 100px;
+      }
+    
+      .event-body {
+        padding: 10px;
+      }
+    
+      .event-title {
+        font-size: 12px;
+      }
+    
+      .event-description,
+      .event-date {
+        font-size: 10px;
+      }
+    
+      .btn {
+        font-size: 9px;
+        padding: 4px;
+      }
+    }
+    
+    @media (max-width: 200px) {
+      .event-image,
+      .event-image-placeholder {
+        height: 60px;
+      }
+    
+      .event-title {
+        font-size: 8px;
+      }
+    
+      .event-description,
+      .event-date {
+        font-size: 6px;
+      }
+    
+      .btn {
+        font-size: 6px;
+        padding: 2px;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      .event-image,
+      .event-image-placeholder {
+        height: 40px;
+      }
+    
+      .event-title {
+        font-size: 6px;
+      }
+    
+      .event-description,
+      .event-date {
+        font-size: 5px;
+      }
+    
+      .btn {
+        font-size: 5px;
+        padding: 1px;
+      }
+    }
+    @media (max-width: 300px) {
+      .btn-group-custom {
+        flex-direction: column;
+        gap: 5px;
+      }
+    
+      .btn-group-custom .btn {
+        width: 100%;
+        min-width: unset;
+        font-size: 9px;
+        padding: 4px;
+      }
+    }
+    @media (max-width: 200px) {
+      .btn-group-custom .btn {
+        font-size: 6px;
+        padding: 2px;
+      }
+    }
+    @media (max-width: 170px) {
+      .btn-group-custom .btn {
+        font-size: 5px;
+        padding: 1px;
+      }
+    }
+  </style>
+{% endblock %}

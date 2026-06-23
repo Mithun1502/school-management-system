@@ -1,0 +1,271 @@
+{% extends 'teacher_dashboard.html' %}
+
+{% block content %}
+  <div class="main-content">
+    <div class="container">
+      <div class="detail-card">
+        {% if event.event_image %}
+          <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="detail-image" />
+        {% else %}
+          <div class="image-placeholder">No Image Available</div>
+        {% endif %}
+
+        <div class="detail-content">
+          <h2 class="event-title">{{ event.title }}</h2>
+
+          <div class="event-info">
+            <span class="info-label">Event Date:</span>
+
+            <span>{{ event.event_date }}</span>
+          </div>
+
+          <div class="event-info">
+            <span class="info-label">Created On:</span>
+
+            <span>{{ event.created_at|date:'d M Y' }}</span>
+          </div>
+
+          <h5 class="description-heading">Description</h5>
+
+          <div class="description-box">{{ event.description }}</div>
+
+          <a href="{% url 'teacher_view_events' %}" class="btn btn-primary back-btn">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .detail-card {
+      max-width: 900px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .detail-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .image-placeholder {
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #111827;
+      color: white;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .detail-content {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      min-height: 350px;
+    }
+    
+    .event-title {
+      color: white;
+      font-weight: 700;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+    
+    .event-info {
+      color: #e5e7eb;
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+    
+    .info-label {
+      font-weight: 700;
+      color: #60a5fa;
+    }
+    
+    .description-heading {
+      color: white;
+      margin-top: 25px;
+      margin-bottom: 15px;
+    }
+    
+    .description-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      color: #d1d5db;
+      line-height: 1.8;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    
+    .back-btn {
+      margin-top: 25px;
+      min-width: 120px;
+    }
+    
+    /* Tablet */
+    
+    @media (max-width: 768px) {
+      .detail-image,
+      .image-placeholder {
+        height: 280px;
+      }
+    
+      .detail-content {
+        padding: 20px;
+      }
+    
+      .event-title {
+        font-size: 1.6rem;
+      }
+    }
+    
+    /* Mobile */
+    
+    @media (max-width: 576px) {
+      .detail-image,
+      .image-placeholder {
+        height: 220px;
+      }
+    
+      .event-title {
+        font-size: 1.3rem;
+      }
+    
+      .description-box {
+        padding: 15px;
+        font-size: 14px;
+      }
+    }
+    
+    /* 300px */
+    
+    @media (max-width: 300px) {
+      .main-content {
+        padding: 8px !important;
+      }
+    
+      .detail-card {
+        border-radius: 12px;
+      }
+    
+      .detail-image,
+      .image-placeholder {
+        height: 120px;
+      }
+    
+      .detail-content {
+        padding: 10px;
+      }
+    
+      .event-title {
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    
+      .event-info {
+        font-size: 10px;
+        margin-bottom: 6px;
+      }
+    
+      .description-heading {
+        font-size: 12px;
+      }
+    
+      .description-box {
+        padding: 8px;
+        font-size: 10px;
+        line-height: 1.4;
+      }
+    
+      .back-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+    }
+    
+    /* 200px */
+    
+    @media (max-width: 200px) {
+      .detail-image,
+      .image-placeholder {
+        height: 80px;
+        font-size: 8px;
+      }
+    
+      .detail-content {
+        padding: 6px;
+      }
+    
+      .event-title {
+        font-size: 9px;
+      }
+    
+      .event-info {
+        font-size: 7px;
+      }
+    
+      .description-heading {
+        font-size: 8px;
+      }
+    
+      .description-box {
+        padding: 5px;
+        font-size: 6px;
+        line-height: 1.2;
+      }
+    
+      .back-btn {
+        font-size: 6px;
+        padding: 2px 5px;
+      }
+    }
+    
+    /* 170px */
+    
+    @media (max-width: 170px) {
+      .detail-image,
+      .image-placeholder {
+        height: 60px;
+        font-size: 6px;
+      }
+    
+      .detail-content {
+        padding: 4px;
+      }
+    
+      .event-title {
+        font-size: 7px;
+        margin-bottom: 5px;
+      }
+    
+      .event-info {
+        font-size: 5px;
+        margin-bottom: 3px;
+      }
+    
+      .description-heading {
+        font-size: 6px;
+      }
+    
+      .description-box {
+        padding: 3px;
+        font-size: 5px;
+        line-height: 1.1;
+      }
+    
+      .back-btn {
+        font-size: 5px;
+        padding: 1px 3px;
+      }
+    }
+  </style>
+{% endblock %}

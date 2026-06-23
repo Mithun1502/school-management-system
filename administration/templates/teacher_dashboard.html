@@ -484,7 +484,10 @@
           <i class="fas fa-chart-line me-2"></i>
           Dashboard
         </a>
-
+        <a href="{% url 'teacher_view_events' %}">
+          <i class="fas fa-calendar-alt me-2"></i>
+          Events
+        </a>
         <a href="{% url 'teacher_add_student' %}">
           <i class="fas fa-user-plus me-2"></i>
           Add Student
@@ -515,7 +518,10 @@
         <i class="fas fa-chart-line me-2"></i>
         Dashboard
       </a>
-
+      <a href="{% url 'teacher_view_events' %}">
+        <i class="fas fa-calendar-alt me-2"></i>
+        Events
+      </a>
       <a href="{% url 'teacher_add_student' %}">
         <i class="fas fa-user-plus me-2"></i>
         Add Student
@@ -571,6 +577,17 @@
                 <i class="fas fa-file-circle-plus"></i>
                 <h4>Add Marks</h4>
                 <p>Manage marks</p>
+              </div>
+            </a>
+          </div>
+          <div class="col-xl-3 col-md-6">
+            <a href="{% url 'teacher_view_events' %}" class="text-decoration-none text-white">
+              <div class="dashboard-card">
+                <i class="fas fa-calendar-alt"></i>
+
+                <h4>Events</h4>
+
+                <p>View school events</p>
               </div>
             </a>
           </div>

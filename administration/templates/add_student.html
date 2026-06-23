@@ -327,12 +327,12 @@
         <form method="POST" id="studentForm">
           {% csrf_token %}
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-2">
               <label>Student Name</label>
               <input type="text" name="name" value="{{ form_data.name|default:'' }}" class="form-control" placeholder="Enter Student Name" autocomplete="off" required />
               <small id="nameError" class="text-danger"></small>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-2">
               <label>Standard</label>
               <select name="standard" id="standard" class="form-select" required>
                 <option value="">Select Standard</option>
@@ -342,35 +342,44 @@
               </select>
               <small id="standardError" class="text-danger"></small>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-2">
               <label>Class Teacher</label>
               <input type="text" id="teacher_name" class="form-control teacher-field" placeholder="Teacher will appear here" readonly />
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-2">
               <label>Roll Number</label>
               <input type="text" id="roll_number" class="form-control" value="Auto Generated" readonly />
             </div>
-            <div class="col-md-6 mb-3 col-lg-12 col-12">
+            <div class="col-md-6 mb-2 col-lg-12 col-12">
               <label>Phone Number</label>
               <input type="text" name="phone" value="{{ form_data.phone|default:'' }}" class="form-control" placeholder="Enter Phone Number" maxlength="10" autocomplete="off" required />
               <small id="phoneError" class="text-danger"></small>
             </div>
-            <div class="col-md-12 mb-4">
+            <div class="col-md-12 mb-2">
               <label>Email</label>
               <input type="email" value="{{ form_data.email|default:'' }}" name="email" class="form-control" placeholder="Enter Email Address" autocomplete="off" required />
               <small id="emailError" class="text-danger"></small>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-lg-12 col-md-12 mb-3">
               <label>Username</label>
               <input type="text" name="username" id="username" value="{{ form_data.username|default:'' }}" class="form-control" placeholder="Enter Username" autocomplete="off" required />
               <small id="usernameError" class="text-danger"></small>
             </div>
 
-            <div class="col-md-6 mb-3">
-              <label>Password</label>
-              <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" required />
-              <small id="passwordError" class="text-danger"></small>
+            <div class="position-relative">
+              <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" required />
+
+              <i class="bi bi-eye-slash-fill" id="togglePassword" style="
+          position:absolute;
+          right:25px;
+          top:50%;
+          transform:translateY(-50%);
+          cursor:pointer;
+          color:white;
+       "></i>
             </div>
+
+            <small id="passwordError" class="text-danger"></small>
           </div>
           <button type="submit" class="btn-save">
             <i class="bi bi-check-circle-fill"></i>
@@ -581,5 +590,22 @@
         bootstrap.Alert.getOrCreateInstance(alert).close()
       })
     }, 3000)
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const password = document.getElementById('password')
+      const toggle = document.getElementById('togglePassword')
+    
+      if (password && toggle) {
+        toggle.addEventListener('click', () => {
+          const type = password.getAttribute('type') === 'password' ? 'text' : 'password'
+    
+          password.setAttribute('type', type)
+    
+          toggle.classList.toggle('bi-eye')
+          toggle.classList.toggle('bi-eye-slash-fill')
+        })
+      }
+    })
   </script>
 {% endblock %}

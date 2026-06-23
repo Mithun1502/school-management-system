@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import logout
-from .models import Teacher, Standard, Student
+from .models import Teacher, Standard, Student, Event
+import os
+from datetime import date
 
 # to protect the password
 from django.contrib.auth.hashers import make_password
@@ -1023,7 +1025,6 @@ def admin_edit_student(request, id):
 
         student.save()
 
-
         messages.success(request, "Student Updated Successfully")
 
         return redirect(
@@ -1455,3 +1456,165 @@ def student_id(request):
 
 def student_events(request):
     return render(request, "student_events.html")
+
+
+def add_event(request):
+
+    if not request.session.get("admin_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("admin_login")
+
+    if request.method == "POST":
+
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip()
+        event_date = request.POST.get("event_date")
+        event_image = request.FILES.get("event_image")
+
+        # Title Validation
+
+        if not title:
+            messages.error(request, "Event Title is required")
+            return redirect("add_event")
+
+        if len(title) < 5:
+            messages.error(request, "Event Title must contain at least 5 characters")
+            return redirect("add_event")
+
+        if len(title) > 100:
+            messages.error(request, "Event Title cannot exceed 100 characters")
+            return redirect("add_event")
+
+        # Description Validation
+
+        if not description:
+            messages.error(request, "Event Description is required")
+            return redirect("add_event")
+
+        if len(description) < 20:
+            messages.error(request, "Description must contain at least 20 characters")
+            return redirect("add_event")
+
+        if len(description) > 500:
+            messages.error(request, "Description cannot exceed 500 characters")
+            return redirect("add_event")
+
+        # Date Validation
+
+        if not event_date:
+            messages.error(request, "Event Date is required")
+            return redirect("add_event")
+
+        if event_date and event_date < str(date.today()):
+            messages.error(request, "Past dates are not allowed")
+            return redirect("add_event")
+
+        # Image Validation
+
+        if event_image:
+
+            allowed_extensions = [".jpg", ".jpeg", ".png"]
+
+            extension = os.path.splitext(event_image.name)[1].lower()
+
+            if extension not in allowed_extensions:
+
+                messages.error(request, "Only JPG, JPEG and PNG files are allowed")
+
+                return redirect("add_event")
+
+            if event_image.size > 5 * 1024 * 1024:
+
+                messages.error(request, "Image size must be less than 5 MB")
+
+                return redirect("add_event")
+
+        Event.objects.create(
+            title=title,
+            description=description,
+            event_date=event_date,
+            event_image=event_image,
+        )
+
+        messages.success(request, "Event Added Successfully")
+
+        return redirect("view_events")
+
+    return render(request, "admin_add_eventpage.html")
+
+
+def view_events(request):
+
+    if not request.session.get("admin_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("admin_login")
+
+    events = Event.objects.all().order_by("-event_date")
+
+    return render(request, "admin_eventview.html", {"events": events})
+
+
+def event_details(request, id):
+
+    if not request.session.get("admin_logged_in"):
+        messages.error(request, "Please login first")
+        return redirect("admin_login")
+
+    event = get_object_or_404(Event, id=id)
+
+    return render(request, "admin_eventdetail.html", {"event": event})
+
+
+def teacher_view_events(request):
+    if not request.session.get("teacher_id"):
+        messages.error(request, "Please login first")
+        return redirect("user_login")
+    events = Event.objects.all().order_by("-event_date")
+
+    context = {"events": events}
+
+    return render(request, "teacher_view_events.html", context)
+
+
+def teacher_event_detail(request, event_id):
+    if not request.session.get("teacher_id"):
+        messages.error(request, "Please login first")
+        return redirect("user_login")
+    event = Event.objects.get(id=event_id)
+
+    context = {"event": event}
+
+    return render(request, "teacher_event_detail.html", context)
+
+
+def student_view_events(request):
+
+    if not request.session.get("student_id"):
+        messages.error(request, "Please login first")
+        return redirect("user_login")
+
+    events = Event.objects.all().order_by("-event_date")
+
+    return render(
+        request,
+        "student_view_events.html",
+        {"events": events},
+    )
+
+
+def student_event_detail(request, event_id):
+
+    if not request.session.get("student_id"):
+        messages.error(request, "Please login first")
+        return redirect("user_login")
+
+    event = get_object_or_404(
+        Event,
+        id=event_id,
+    )
+
+    return render(
+        request,
+        "student_event_detail.html",
+        {"event": event},
+    )

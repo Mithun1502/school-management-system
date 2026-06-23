@@ -276,16 +276,42 @@
           <small class="text-danger" id="usernameError"></small>
         </div>
 
-        <div class="col-md-6 mb-3">
-          <label>Password</label>
-          <input type="password" id="password" name="password" class="form-control" placeholder="Enter new password" />
-          <small class="text-danger" id="passwordError"></small>
+        <div class="position-relative col-md-6 mb-3F">
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" required />
+
+          <i class="bi bi-eye-slash-fill" id="togglePassword" style="
+          position:absolute;
+          right:15px;
+          top:50%;
+          transform:translateY(-50%);
+          cursor:pointer;
+          color:white;
+       "></i>
         </div>
+
+        <small id="passwordError" class="text-danger"></small>
 
         <button type="submit" class="btn btn-success mt-3">Update Student</button>
       </form>
     </div>
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const password = document.getElementById('password')
+      const toggle = document.getElementById('togglePassword')
+    
+      if (password && toggle) {
+        toggle.addEventListener('click', () => {
+          const type = password.getAttribute('type') === 'password' ? 'text' : 'password'
+    
+          password.setAttribute('type', type)
+    
+          toggle.classList.toggle('bi-eye')
+          toggle.classList.toggle('bi-eye-slash-fill')
+        })
+      }
+    })
+  </script>
   <script>
     document.getElementById('editStudentForm').addEventListener('submit', function (e) {
       let isValid = true

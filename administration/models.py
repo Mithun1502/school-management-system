@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 
 class Teacher(models.Model):
@@ -44,3 +45,14 @@ class Student(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Event(models.Model):
+    title = models.CharField(max_length=100, default="School Event")
+    description = models.TextField(default="No Description Available")
+    event_image = models.ImageField(upload_to="events/", null=True, blank=True)
+    event_date = models.DateField(default=date.today)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

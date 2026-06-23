@@ -2,14 +2,14 @@
 
 {% block content %}
   <style>
-    .main-content {
-      padding: 30px;
+    .container {
+      display: flex;
+      justify-content: center;
     }
-    
     .form-card {
       width: 100%;
       max-width: 700px;
-      margin: 20px auto;
+      margin: 50px auto 50px 350px;
     
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(10px);
@@ -78,7 +78,6 @@
       padding: 10px 25px;
     }
     
-    /* Tablet */
     @media (max-width: 991px) {
       .main-content {
         margin-left: 0 !important;
@@ -91,7 +90,6 @@
       }
     }
     
-    /* Mobile */
     @media (max-width: 768px) {
       .main-content {
         padding: 15px;
@@ -110,7 +108,6 @@
       }
     }
     
-    /* Small Mobile */
     @media (max-width: 480px) {
       .form-card {
         padding: 15px;
@@ -131,7 +128,6 @@
       }
     }
     
-    /* 320px */
     @media (max-width: 320px) {
       .form-card {
         padding: 12px;
@@ -152,7 +148,6 @@
       }
     }
     
-    /* 170px */
     @media (max-width: 170px) {
       .main-content {
         padding: 5px;
@@ -218,15 +213,25 @@
       color: white;
       border-color: rgba(255, 255, 255, 0.1);
     }
+    
+    @media (max-width: 1250px) and (min-width: 992px) {
+      .form-card {
+        margin: 50px 50px 50px 350px !important;
+      }
+    }
   </style>
 
-  <div class="container-fluid">
+  <div class="container">
     <div class="form-card">
       <h2>
         <i class="bi bi-pencil-square me-2"></i>
         Edit Student
       </h2>
-
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
       <hr />
 
       <form method="POST" id="editStudentForm">
@@ -265,11 +270,20 @@
           <small id="usernameError" class="text-danger"></small>
         </div>
 
-        <div class="mb-4">
-          <label class="form-label">Password</label>
-          <input type="password" id="password" name="password" class="form-control" placeholder="Enter new password" />
-          <small id="passwordError" class="text-danger"></small>
+        <div class="position-relative mb-4">
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" />
+
+          <i class="bi bi-eye-slash-fill" id="togglePassword" style="
+          position:absolute;
+          right:15px;
+          top:50%;
+          transform:translateY(-50%);
+          cursor:pointer;
+          color:white;
+       "></i>
         </div>
+
+        <small id="passwordError" class="text-danger"></small>
         <div class="mb-4">
           <label class="form-label">Class Teacher</label>
           <input type="text" class="form-control" value="{{ student.teacher.name }}" readonly />
@@ -358,6 +372,23 @@
     
       if (!isValid) {
         e.preventDefault()
+      }
+    })
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const password = document.getElementById('password')
+      const toggle = document.getElementById('togglePassword')
+    
+      if (password && toggle) {
+        toggle.addEventListener('click', () => {
+          const type = password.getAttribute('type') === 'password' ? 'text' : 'password'
+    
+          password.setAttribute('type', type)
+    
+          toggle.classList.toggle('bi-eye')
+          toggle.classList.toggle('bi-eye-slash-fill')
+        })
       }
     })
   </script>

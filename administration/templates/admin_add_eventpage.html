@@ -1,0 +1,314 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+  <style>
+    .form-card {
+      max-width: 700px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .form-card h2 {
+      color: white;
+      font-weight: 700;
+    }
+    
+    .form-label {
+      color: white;
+      font-weight: 600;
+    }
+    
+    .form-control {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+    
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      border-color: #2563eb;
+      box-shadow: none;
+    }
+    
+    .form-control::placeholder {
+      color: #cbd5e1;
+    }
+    
+    .submit-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-weight: 600;
+      border-radius: 12px;
+    }
+    
+    .submit-btn:hover {
+      background: #1d4ed8;
+      color: white;
+    }
+    
+    textarea {
+      resize: none;
+    }
+    
+    /* Tablet */
+    
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 15px !important;
+      }
+    
+      .form-card {
+        padding: 20px;
+      }
+    
+      .form-card h2 {
+        font-size: 1.6rem;
+      }
+    }
+    
+    /* 200px */
+    
+    @media (max-width: 200px) {
+      .main-content {
+        padding: 5px !important;
+      }
+    
+      .form-card {
+        padding: 8px;
+        border-radius: 10px;
+      }
+    
+      .form-card h2 {
+        font-size: 0.8rem;
+      }
+    
+      .form-label {
+        font-size: 0.55rem;
+      }
+    
+      .form-control {
+        font-size: 0.55rem;
+        padding: 4px;
+      }
+    
+      .submit-btn {
+        font-size: 0.55rem;
+        padding: 5px;
+      }
+    }
+    
+    /* 170px */
+    
+    @media (max-width: 170px) {
+      .form-card {
+        padding: 5px;
+        border-radius: 6px;
+      }
+    
+      .form-card h2 {
+        font-size: 0.65rem;
+      }
+    
+      .form-label {
+        font-size: 0.45rem;
+      }
+    
+      .form-control {
+        font-size: 0.45rem;
+        padding: 3px;
+      }
+    
+      textarea {
+        min-height: 50px;
+      }
+    
+      .submit-btn {
+        font-size: 0.45rem;
+        padding: 4px;
+      }
+    }
+    /* File Input */
+    
+    input[type='file'] {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 8px;
+    }
+    
+    input[type='file']::file-selector-button {
+      background: #111827;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      margin-right: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    
+    input[type='file']::file-selector-button:hover {
+      background: #2563eb;
+    }
+    
+    input[type='file']:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: none;
+    }
+    
+    @media (max-width: 768px) {
+      input[type='file'] {
+        font-size: 14px;
+      }
+    
+      input[type='file']::file-selector-button {
+        padding: 8px 14px;
+        font-size: 13px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      input[type='file'] {
+        font-size: 12px;
+        padding: 6px;
+      }
+    
+      input[type='file']::file-selector-button {
+        padding: 6px 10px;
+        font-size: 11px;
+        margin-right: 8px;
+      }
+    }
+    
+    @media (max-width: 200px) {
+      input[type='file'] {
+        font-size: 7px;
+        padding: 2px;
+      }
+    
+      input[type='file']::file-selector-button {
+        padding: 2px 4px;
+        font-size: 6px;
+        margin-left: 3px;
+        border-radius: 4px;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      input[type='file'] {
+        font-size: 5px;
+        padding: 1px;
+      }
+    
+      input[type='file']::file-selector-button {
+        padding: 1px 3px;
+        font-size: 5px;
+        margin-left: 2px;
+        border-radius: 2px;
+      }
+    }
+  </style>
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="form-card mx-auto">
+        <h2 class="text-center mb-4">
+          <i class="bi bi-calendar-event"></i>
+          Add Event
+        </h2>
+
+        <form method="POST" enctype="multipart/form-data" id="eventForm">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Event Title</label>
+            <input type="text" name="title" class="form-control" placeholder="Enter Event Title" maxlength="100" minlength="5" required id="title" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Event Description</label>
+            <textarea name="description" rows="5" maxlength="500" minlength="20" class="form-control" placeholder="Enter Event Description" id="description" required></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Event Date</label>
+            <input type="date" name="event_date" id="event_date" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Event Banner</label>
+            <input type="file" id="event_image" name="event_image" class="form-control" accept=".jpg,.jpeg,.png" />
+          </div>
+          <button type="submit" class="btn submit-btn w-100">
+            <i class="bi bi-plus-circle"></i>
+            Add Event
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('eventForm').addEventListener('submit', function (e) {
+      let title = document.getElementById('title').value.trim()
+      let description = document.getElementById('description').value.trim()
+      let eventDate = document.getElementById('event_date').value
+      let image = document.getElementById('event_image').files[0]
+    
+      if (title.length < 5 || title.length > 100) {
+        alert('Event Title must contain 5 to 100 characters')
+        e.preventDefault()
+        return
+      }
+    
+      if (description.length < 20 || description.length > 500) {
+        alert('Description must contain 20 to 500 characters')
+        e.preventDefault()
+        return
+      }
+    
+      if (!eventDate) {
+        alert('Please select an Event Date')
+        e.preventDefault()
+        return
+      }
+    
+      let today = new Date()
+      today.setHours(0, 0, 0, 0)
+    
+      let selectedDate = new Date(eventDate)
+    
+      if (selectedDate < today) {
+        alert('Past dates are not allowed')
+        e.preventDefault()
+        return
+      }
+    
+      if (image) {
+        let allowedExtensions = ['jpg', 'jpeg', 'png']
+    
+        let extension = image.name.split('.').pop().toLowerCase()
+    
+        if (!allowedExtensions.includes(extension)) {
+          alert('Only JPG, JPEG and PNG files are allowed')
+          e.preventDefault()
+          return
+        }
+    
+        if (image.size > 5 * 1024 * 1024) {
+          alert('Image size must be less than 5 MB')
+          e.preventDefault()
+          return
+        }
+      }
+    })
+  </script>
+{% endblock %}
