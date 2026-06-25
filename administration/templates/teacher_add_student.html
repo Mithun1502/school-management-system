@@ -220,6 +220,44 @@
         font-size: 7px !important;
       }
     }
+    .password-toggle {
+      position: absolute;
+      right: 18px;
+      top: 68%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: white;
+      font-size: 18px;
+      z-index: 10;
+    }
+    
+    @media (max-width: 768px) {
+      .password-toggle {
+        right: 15px;
+        font-size: 16px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .password-toggle {
+        right: 12px;
+        font-size: 15px;
+      }
+    }
+    
+    @media (max-width: 300px) {
+      .password-toggle {
+        right: 8px;
+        font-size: 12px;
+      }
+    }
+    
+    @media (max-width: 170px) {
+      .password-toggle {
+        right: 5px;
+        font-size: 9px;
+      }
+    }
   </style>
 
   <div class="main-content">
@@ -267,23 +305,17 @@
             <small class="text-danger" id="emailError"></small>
           </div>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-lg-12 col-md-6 mb-3">
           <label>Username</label>
           <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" value="{{ username|default:'' }}" required />
           <small class="text-danger" id="usernameError"></small>
         </div>
 
-        <div class="position-relative col-md-6 mb-3">
-          <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" required />
+        <div class="position-relative col-lg-12 col-md-6 mb-3">
+          <label>Password</label>
+          <input type="password" id="password" name="password" class="form-control pe-5" placeholder="Enter Password" />
 
-          <i class="bi bi-eye-slash-fill" id="togglePassword" style="
-          position:absolute;
-          right:15px;
-          top:50%;
-          transform:translateY(-50%);
-          cursor:pointer;
-          color:white;
-       "></i>
+          <span id="togglePassword" class="password-toggle"><i class="fa-solid fa-eye"></i></span>
         </div>
 
         <small id="passwordError" class="text-danger"></small>
@@ -390,17 +422,21 @@
     document.addEventListener('DOMContentLoaded', () => {
       const password = document.getElementById('password')
       const toggle = document.getElementById('togglePassword')
+      const icon = toggle.querySelector('i')
     
-      if (password && toggle) {
-        toggle.addEventListener('click', () => {
-          const type = password.getAttribute('type') === 'password' ? 'text' : 'password'
+      toggle.addEventListener('click', () => {
+        if (password.type === 'password') {
+          password.type = 'text'
     
-          password.setAttribute('type', type)
+          icon.classList.remove('fa-eye')
+          icon.classList.add('fa-eye-slash')
+        } else {
+          password.type = 'password'
     
-          toggle.classList.toggle('bi-eye')
-          toggle.classList.toggle('bi-eye-slash-fill')
-        })
-      }
+          icon.classList.remove('fa-eye-slash')
+          icon.classList.add('fa-eye')
+        }
+      })
     })
   </script>
 {% endblock %}

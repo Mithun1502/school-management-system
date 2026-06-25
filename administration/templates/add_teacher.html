@@ -535,17 +535,24 @@
     }
     
     function validateConfirmPassword() {
+      if (confirmPasswordInput.value.trim() === '') {
+        clearError(confirmPasswordInput, 'confirmPasswordError')
+        return true
+      }
+    
       if (passwordInput.value !== confirmPasswordInput.value) {
         setError(confirmPasswordInput, 'confirmPasswordError', 'Passwords do not match')
         return false
       }
+    
       clearError(confirmPasswordInput, 'confirmPasswordError')
       return true
     }
-    function validateAddress() {
-      const value = addressInput.value.trim()
     
-      if (!addressRegex.test(value)) {
+    function validateAddress() {
+      const value = addressInput.value.replace(/[\r\n\s]/g, '')
+    
+      if (value.length < 10 || value.length > 200) {
         setError(addressInput, 'addressError', 'Address must be 10 to 200 characters')
         return false
       }
@@ -553,7 +560,6 @@
       clearError(addressInput, 'addressError')
       return true
     }
-    
     function validateAccount() {
       const value = accountInput.value.trim()
     
@@ -597,7 +603,6 @@
     usernameInput.addEventListener('input', validateUsername)
     passwordInput.addEventListener('input', () => {
       validatePassword()
-      validateConfirmPassword()
     })
     confirmPasswordInput.addEventListener('input', validateConfirmPassword)
     addressInput.addEventListener('input', validateAddress)

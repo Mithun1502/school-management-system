@@ -261,71 +261,252 @@
       color: black;
       background: rgba(255, 255, 255, 0.12) !important;
     }
-    textarea{
+    textarea {
       resize: none;
+    }
+    .error-text {
+      color: #ff4d4d;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .input-error {
+      border: 1px solid red !important;
     }
   </style>
 
   <div class="main-content">
     <div class="edit-teacher-container">
       <h2>Edit Teacher</h2>
-      <form method="POST">
+      <form method="POST" id="teacherForm">
         {% csrf_token %}
         <div>
           <label>Name</label>
-          <input type="text" name="name" value="{{ teacher.name }}" required />
+          <input type="text" id="name" name="name" value="{{ teacher.name }}" required />
+          <small id="nameError" class="error-text"></small>
         </div>
         <br />
         <div>
           <label>Standard</label>
-          <select name="standard" required>
+          <select id="standard" name="standard" required>
             {% for standard in standards %}
               {% if teacher.standard == standard.standard_name %}
-                <option value="{{ standard.standard_name }}" selected="selected">{{ standard.standard_name }}</option>
+                <option value="{{ standard.standard_name }}" selected>{{ standard.standard_name }}</option>
               {% else %}
                 <option value="{{ standard.standard_name }}">{{ standard.standard_name }}</option>
               {% endif %}
             {% endfor %}
           </select>
+
+          <small id="standardError" class="error-text"></small>
         </div>
         <br />
         <div>
           <label>Phone</label>
-          <input type="text" name="phone" value="{{ teacher.phone }}" required />
+          <input type="text" id="phone" name="phone" value="{{ teacher.phone }}" required />
+          <small id="phoneError" class="error-text"></small>
         </div>
         <br />
         <div>
           <label>Email</label>
-          <input type="email" name="email" value="{{ teacher.email }}" required />
+          <input type="email" id="email" name="email" value="{{ teacher.email }}" required />
+          <small id="emailError" class="error-text"></small>
         </div>
         <br />
         <div>
           <label>Username</label>
-          <input type="text" name="username" value="{{ teacher.username }}" required />
+          <input type="text" id="username" name="username" value="{{ teacher.username }}" required />
+          <small id="usernameError" class="error-text"></small>
         </div>
         <br />
         <div>
           <label>Address</label>
-          <textarea name="address" required>{{ teacher.address }}</textarea>
+          <textarea id="address" name="address" required>{{ teacher.address }}</textarea>
+          <small id="addressError" class="error-text"></small>
         </div>
         <br />
         <div>
-          <label>Bank Account Number</label>
-          <input type="text" name="bank_account_number" value="{{ teacher.bank_account_number }}" required />
+          <label>Account Number</label>
+          <input type="text" id="bank_account_number" name="bank_account_number" value="{{ teacher.bank_account_number }}" required />
+          <small id="accountError" class="error-text"></small>
         </div>
         <br />
         <div>
           <label>Bank Branch</label>
-          <input type="text" name="bank_branch" value="{{ teacher.bank_branch }}" required />
+          <input type="text" id="bank_branch" name="bank_branch" value="{{ teacher.bank_branch }}" required />
+          <small id="branchError" class="error-text"></small>
         </div>
         <br />
         <div>
           <label>IFSC Code</label>
-          <input type="text" name="ifsc_code" value="{{ teacher.ifsc_code }}" required />
+          <input type="text" id="ifsc_code" name="ifsc_code" value="{{ teacher.ifsc_code }}" required />
+          <small id="ifscError" class="error-text"></small>
         </div>
         <br />
         <button type="submit">Update Teacher</button>
       </form>
     </div>
   </div>
+  <script>
+    const form = document.getElementById('teacherForm')
+    
+    const nameInput = document.getElementById('name')
+    const standardInput = document.querySelector("[name='standard']")
+    const phoneInput = document.getElementById('phone')
+    const emailInput = document.getElementById('email')
+    const usernameInput = document.getElementById('username')
+    
+    const addressInput = document.getElementById('address')
+    const accountInput = document.getElementById('bank_account_number')
+    const branchInput = document.getElementById('bank_branch')
+    const ifscInput = document.getElementById('ifsc_code')
+    const nameRegex = /^[A-Za-z ]{3,25}$/
+    const phoneRegex = /^[6789]\d{9}$/
+    const emailRegex = /^[a-zA-Z0-9_.]+@gmail\.com$/
+    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{3,19}$/
+    const addressRegex = /^.{10,200}$/
+    const accountRegex = /^\d{9,18}$/
+    const branchRegex = /^[A-Za-z .,-]{3,50}$/
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/
+    
+    function setError(input, errorId, message) {
+      document.getElementById(errorId).textContent = message
+      input.classList.add('input-error')
+    }
+    
+    function clearError(input, errorId) {
+      document.getElementById(errorId).textContent = ''
+      input.classList.remove('input-error')
+    }
+    
+    function validateName() {
+      const value = nameInput.value.trim()
+      if (!nameRegex.test(value)) {
+        setError(nameInput, 'nameError', 'Name must contain only letters and spaces (3-25 characters)')
+        return false
+      }
+      clearError(nameInput, 'nameError')
+      return true
+    }
+    
+    function validateStandard() {
+      const value = standardInput.value
+    
+      if (value === '') {
+        setError(standardInput, 'standardError', 'Please select a standard')
+        return false
+      }
+    
+      clearError(standardInput, 'standardError')
+      return true
+    }
+    
+    function validatePhone() {
+      const value = phoneInput.value.trim()
+      if (!phoneRegex.test(value)) {
+        setError(phoneInput, 'phoneError', 'Phone number must be 10 digits and start with 6, 7, 8 or 9')
+        return false
+      }
+      clearError(phoneInput, 'phoneError')
+      return true
+    }
+    
+    function validateEmail() {
+      const value = emailInput.value.trim().toLowerCase()
+      if (!emailRegex.test(value)) {
+        setError(emailInput, 'emailError', 'Only Gmail addresses are allowed')
+        return false
+      }
+      clearError(emailInput, 'emailError')
+      return true
+    }
+    
+    function validateUsername() {
+      const value = usernameInput.value.trim()
+      if (!usernameRegex.test(value)) {
+        setError(usernameInput, 'usernameError', 'Username must start with a letter and contain only letters, numbers and underscore (4-20 characters)')
+        return false
+      }
+      clearError(usernameInput, 'usernameError')
+      return true
+    }
+    
+    function validateAddress() {
+      const value = addressInput.value.replace(/[\r\n\s]/g, '')
+    
+      if (value.length < 10 || value.length > 200) {
+        setError(addressInput, 'addressError', 'Address must be 10 to 200 characters')
+        return false
+      }
+    
+      clearError(addressInput, 'addressError')
+      return true
+    }
+    function validateAccount() {
+      const value = accountInput.value.trim()
+    
+      if (!accountRegex.test(value)) {
+        setError(accountInput, 'accountError', 'Account number must contain 9-18 digits')
+        return false
+      }
+    
+      clearError(accountInput, 'accountError')
+      return true
+    }
+    
+    function validateBranch() {
+      const value = branchInput.value.trim()
+    
+      if (!branchRegex.test(value)) {
+        setError(branchInput, 'branchError', 'Bank branch must contain only letters, spaces, dot (.), comma (,) and hyphen (-) (3-50 characters)')
+        return false
+      }
+    
+      clearError(branchInput, 'branchError')
+      return true
+    }
+    
+    function validateIFSC() {
+      const value = ifscInput.value.trim().toUpperCase()
+    
+      if (!ifscRegex.test(value)) {
+        setError(ifscInput, 'ifscError', 'Invalid Code Eg: MITH015ASHW')
+        return false
+      }
+    
+      clearError(ifscInput, 'ifscError')
+      return true
+    }
+    
+    nameInput.addEventListener('input', validateName)
+    standardInput.addEventListener('change', validateStandard)
+    phoneInput.addEventListener('input', validatePhone)
+    emailInput.addEventListener('input', validateEmail)
+    usernameInput.addEventListener('input', validateUsername)
+    addressInput.addEventListener('input', validateAddress)
+    accountInput.addEventListener('input', validateAccount)
+    branchInput.addEventListener('input', validateBranch)
+    ifscInput.addEventListener('input', validateIFSC)
+    
+    form.addEventListener('submit', function (e) {
+      const isValid = validateName() && validateStandard() && validatePhone() && validateEmail() && validateUsername() && validateAddress() && validateAccount() && validateBranch() && validateIFSC()
+    
+      if (!isValid) {
+        e.preventDefault()
+      }
+    })
+  </script>
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.alert').forEach((alert) => {
+        alert.style.transition = 'all 0.5s ease'
+        alert.style.opacity = '0'
+        alert.style.transform = 'translateY(-10px)'
+    
+        setTimeout(() => {
+          alert.remove()
+        }, 500)
+      })
+    }, 3000)
+  </script>
 {% endblock %}

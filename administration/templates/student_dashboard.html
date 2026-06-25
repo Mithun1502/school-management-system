@@ -13,6 +13,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
     <style>
+      input[type='password']::-ms-reveal,
+      input[type='password']::-ms-clear {
+        display: none;
+      }
+      
+      input[type='password']::-webkit-credentials-auto-fill-button,
+      input[type='password']::-webkit-textfield-decoration-container {
+        display: none !important;
+      }
       * {
         margin: 0;
         padding: 0;
@@ -32,7 +41,6 @@
       
       .dashboard-wrapper {
         display: flex;
-        min-height: 100vh;
       }
       
       .sidebar {
@@ -442,7 +450,7 @@
           </li>
 
           <li>
-            <a href="{% url 'student_view_events' %}" class="nav-link">Events</a>
+            <a href="{% url 'student_events' %}" class="nav-link">Upcoming Events</a>
           </li>
 
           <li>
@@ -462,51 +470,44 @@
           <h5>Student Dashboard</h5>
         </div>
         {% block content %}
-          <div class="welcome-card">
+          <div class="welcome-card col-12">
             <h2>Welcome {{ student.name }}</h2>
             <p>Manage your profile, marks, attendance, events and ID card from one place.</p>
           </div>
 
           <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 col-lg-12">
               <div class="glass-card">
                 <a href="{% url 'student_profile' %}" class="glass-card-link"><h5>My Profile</h5></a>
                 <p>View Student Details</p>
               </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 col-lg-12">
               <div class="glass-card">
                 <a href="{% url 'student_marks' %}" class="glass-card-link"><h5>Marks</h5></a>
                 <p>Check Academic Results</p>
               </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 col-lg-12">
               <div class="glass-card">
                 <a href="{% url 'student_attendance' %}" class="glass-card-link"><h5>Attendance</h5></a>
                 <p>Track Attendance</p>
               </div>
             </div>
 
-            <div class="col-lg-4  col-md-6">
+            <div class="col-lg-4 col-md-6 col-lg-12">
               <div class="glass-card">
-                <a href="{% url 'student_view_events' %}" class="glass-card-link"><h4>Events</h4></a>
-                <p>View school events</p>
+                <a href="{% url 'student_events' %}" class="glass-card-link"><h5>Events</h5></a>
+                <p>Upcoming Activities</p>
               </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 col-lg-12">
               <div class="glass-card">
                 <a href="{% url 'student_id' %}" class="glass-card-link"><h5>ID Card</h5></a>
                 <p>Download Student ID</p>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-              <div class="glass-card">
-                <a href="{% url 'student_dashboard' %}" class="glass-card-link"><h5>Student Portal</h5></a>
-                <p>School Management System</p>
               </div>
             </div>
           </div>

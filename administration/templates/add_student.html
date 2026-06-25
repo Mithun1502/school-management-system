@@ -307,6 +307,14 @@
         min-height: 24px;
       }
     }
+    .password-toggle {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: white;
+    }
   </style>
   {% comment %} <div class="main-content">
     <h3>Student Section Loading....</h3>
@@ -366,17 +374,11 @@
               <small id="usernameError" class="text-danger"></small>
             </div>
 
-            <div class="position-relative">
-              <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" required />
+            <div class="position-relative col-lg-12 col-md-12 mb-3">
+              <label>Password</label>
+              <input type="password" id="password" name="password" class="form-control pe-5" placeholder="Enter Password" />
 
-              <i class="bi bi-eye-slash-fill" id="togglePassword" style="
-          position:absolute;
-          right:25px;
-          top:50%;
-          transform:translateY(-50%);
-          cursor:pointer;
-          color:white;
-       "></i>
+              <span id="togglePassword" class="password-toggle"><i class="bi bi-eye-slash-fill"></i></span>
             </div>
 
             <small id="passwordError" class="text-danger"></small>
